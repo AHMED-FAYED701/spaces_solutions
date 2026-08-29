@@ -49,7 +49,7 @@ window.SPACES_HOME = {
       },
 
       content: {
-        columnX: 60
+        columnX: 72
       },
 
       mark: {
@@ -528,35 +528,11 @@ window.SPACES_HOME = {
   signal: {
     pieces: [
       {
-        key: "hero-source",
-
-        d:
-          "M 514.3 285.5 " +
-          "C 506 309 484 326 458 334 " +
-          "C 402 351 355 392 355 450",
-
-        start: {
-          x: 514.3,
-          y: 285.5
-        },
-
-        end: {
-          x: 355,
-          y: 450
-        },
-
-        window: {
-          mode: "hold",
-          from: 0.56,
-          to: 0.98
-        }
-      },
-
-      {
         key: "principle-trunk",
 
         /*
-         * Exact continuation from Hero.
+         * Section 2 signal trunk. Its final origin geometry will be resolved
+         * with the Section 2 redesign; no signal piece exists in the Hero.
          *
          * World:
          * (355,450)
@@ -737,18 +713,6 @@ window.SPACES_HOME = {
     ],
 
     seams: [
-      {
-        from: "hero-source",
-        to: "principle-trunk",
-
-        point: {
-          x: 355,
-          y: 450
-        },
-
-        departure: 0
-      },
-
       {
         from: "principle-trunk",
         to: "about-who",
