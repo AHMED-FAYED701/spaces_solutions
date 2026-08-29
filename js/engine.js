@@ -25,6 +25,14 @@
   var camera = null;
   var signalRuns = [];
   var pxPerUnit = 1;
+  var lastBaseOrigin = { x: 0, y: 0 };
+  var lastProgress = 0;
+  var cameraOverride = {
+    active: false,
+    x: 0,
+    y: 0,
+    tween: null
+  };
 
   var MOBILE_MAX = 820;
 
@@ -88,7 +96,7 @@
    *
    * index.html will render one SVG group per signal piece with:
    *
-   *   data-signal-piece="hero-exit"
+   *   data-signal-piece="hero-source"
    *
    * Each group contains halo / glow / core paths sharing the same geometry.
    */
@@ -170,9 +178,7 @@
   /*
    * Move the world so the authored camera point sits at viewport centre.
    */
-  function applyCamera(arc) {
-    var origin = camera.pointAt(arc);
-
+  function renderCameraOrigin(origin) {
     var viewportCentreX =
       window.innerWidth / 2 / pxPerUnit;
 
@@ -193,6 +199,19 @@
       "px,0)";
 
     applyGroundState(origin.x, origin.y);
+  }
+
+  function applyCamera(arc) {
+    var origin = camera.pointAt(arc);
+
+    lastBaseOrigin = {
+      x: origin.x,
+      y: origin.y
+    };
+
+    if (!cameraOverride.active) {
+      renderCameraOrigin(origin);
+    }
 
     return origin;
   }
@@ -246,6 +265,8 @@
    * 3. authored visible-signal windows
    */
   function apply(progress) {
+    lastProgress = progress;
+
     var holdUnits =
       DATA.scroll.holdScreens *
       (window.innerHeight / pxPerUnit);
@@ -276,6 +297,17 @@
       camera.len === 0
         ? 1
         : clamp01(arc / camera.len);
+
+    window.dispatchEvent(
+      new CustomEvent("spaces:progress", {
+        detail: {
+          progress: progress,
+          holdProgress: holdProgress,
+          arcProgress: arcProgress,
+          holding: holding
+        }
+      })
+    );
 
     applyCamera(arc);
     applySignal(holdProgress, arcProgress);
@@ -360,8 +392,53 @@
         return (
           camera.len * pxPerUnit +
           DATA.scroll.holdScreens *
-            window.innerHeight
+          window.innerHeight
         );
+      },
+
+      moveCameraTo: function (target, duration, ease, onComplete) {
+        var start = cameraOverride.active
+          ? { x: cameraOverride.x, y: cameraOverride.y }
+          : lastBaseOrigin;
+
+        if (cameraOverride.tween) {
+          cameraOverride.tween.kill();
+        }
+
+        cameraOverride.x = start.x;
+        cameraOverride.y = start.y;
+        cameraOverride.active = true;
+
+        cameraOverride.tween = window.gsap.to(cameraOverride, {
+          x: target.x,
+          y: target.y,
+          duration: duration,
+          ease: ease,
+          onUpdate: function () {
+            renderCameraOrigin(cameraOverride);
+          },
+          onComplete: function () {
+            cameraOverride.tween = null;
+
+            if (typeof onComplete === "function") {
+              onComplete();
+            }
+          }
+        });
+      },
+
+      releaseCameraOverride: function () {
+        if (cameraOverride.tween) {
+          cameraOverride.tween.kill();
+          cameraOverride.tween = null;
+        }
+
+        cameraOverride.active = false;
+        apply(lastProgress);
+      },
+
+      isCameraOverrideActive: function () {
+        return cameraOverride.active;
       }
     };
 
