@@ -14,11 +14,11 @@ window.SPACES_HOME = {
 
   world: {
     w: 2340,
-    h: 7830
+    h: 7580
   },
 
   scroll: {
-    holdScreens: 1.0
+    holdScreens: 0
   },
 
   signalSpec: {
@@ -66,71 +66,50 @@ window.SPACES_HOME = {
       }
     },
 
-    /*
-     * CHAPTER 02 — POSITIONING / PRINCIPLE
-     *
-     * World:
-     * x 0 → 740
-     * y 450 → 850
-     */
+    /* CHAPTER 02 — WHO WE ARE / World x 0 → 740, y 450 → 1270 */
     c02: {
       key: "c02",
       type: "paper",
       x: 0,
       y: 450,
       w: 740,
-      h: 400,
+      h: 570,
 
       cameraStop: {
         x: 355,
-        y: 650
+        y: 640
       },
 
       localCameraCentre: {
         x: 355,
-        y: 200
+        y: 190
       },
 
       copy: {
-        x: 60,
-        y: 115,
-        w: 260
+        x: 146,
+        y: 48,
+        w: 270
       },
 
       visual: {
-        x: 390,
-        y: 85,
-        w: 290,
-        h: 240,
-        placeholder: true
-      }
-    },
-
-    c03: {
-      key: "c03",
-      type: "paper",
-      x: 0,
-      y: 850,
-      w: 740,
-      h: 420,
-
-      cameraStop: {
-        x: 355,
-        y: 1070
+        x: 350,
+        y: 182,
+        w: 380,
+        h: 253
       }
     },
 
     c04: {
       key: "c04",
-      type: "dark",
+      type: "paper",
       x: 740,
-      y: 850,
+      y: 450,
       w: 800,
-      h: 420,
+      h: 570,
 
       cameraStop: {
-        x: 1160,
-        y: 1070
+        x: 1070,
+        y: 730
       }
     },
 
@@ -138,13 +117,13 @@ window.SPACES_HOME = {
       key: "c05",
       type: "dark",
       x: 740,
-      y: 1270,
+      y: 1020,
       w: 800,
       h: 500,
 
       cameraStop: {
         x: 1160,
-        y: 1510
+        y: 1260
       }
     },
 
@@ -152,17 +131,17 @@ window.SPACES_HOME = {
       key: "c06-dc",
       type: "dark",
       x: 0,
-      y: 1270,
+      y: 1020,
       w: 740,
       h: 500,
-      cameraStop: { x: 355, y: 1530 }
+      cameraStop: { x: 355, y: 1280 }
     },
 
     dcServices: {
       key: "dc-services",
       type: "dark",
       x: 0,
-      y: 1770,
+      y: 1520,
       w: 740,
       h: 2500
     },
@@ -171,7 +150,7 @@ window.SPACES_HOME = {
       key: "it-services",
       type: "dark",
       x: 740,
-      y: 2270,
+      y: 2020,
       w: 800,
       h: 2610
     },
@@ -180,17 +159,17 @@ window.SPACES_HOME = {
       key: "c06-av",
       type: "dark",
       x: 1540,
-      y: 1270,
+      y: 1020,
       w: 800,
       h: 500,
-      cameraStop: { x: 1960, y: 1530 }
+      cameraStop: { x: 1960, y: 1280 }
     },
 
     avServices: {
       key: "av-services",
       type: "dark",
       x: 1540,
-      y: 1770,
+      y: 1520,
       w: 800,
       h: 3000
     },
@@ -199,27 +178,27 @@ window.SPACES_HOME = {
       key: "c06-it",
       type: "dark",
       x: 740,
-      y: 1770,
+      y: 1520,
       w: 800,
       h: 500,
-      cameraStop: { x: 1160, y: 2030 }
+      cameraStop: { x: 1160, y: 1780 }
     },
 
     howEntry: {
       key: "how-shared-entry",
       type: "dark",
       x: 0,
-      y: 4770,
+      y: 4520,
       w: 2340,
       h: 500,
-      cameraStop: { x: 1160, y: 5030 }
+      cameraStop: { x: 1160, y: 4780 }
     },
 
     howWorkMain: {
       key: "how-work-main",
       type: "paper",
       x: 0,
-      y: 5270,
+      y: 5020,
       w: 2340,
       h: 1200
     },
@@ -228,7 +207,7 @@ window.SPACES_HOME = {
       key: "why-spaces",
       type: "dark",
       x: 0,
-      y: 6470,
+      y: 6220,
       w: 2340,
       h: 1000
     },
@@ -237,7 +216,7 @@ window.SPACES_HOME = {
       key: "final-cta",
       type: "dark",
       x: 0,
-      y: 7470,
+      y: 7220,
       w: 2340,
       h: 360
     }
@@ -258,10 +237,11 @@ window.SPACES_HOME = {
   camera: {
     path:
       "M 355 200 " +
-      "L 355 1028 " +
-      "Q 355 1070 397 1070 " +
-      "L 1160 1070 " +
-      "L 1160 1510",
+      "L 355 696 " +
+      "Q 355 730 389 730 " +
+      "L 1126 730 " +
+      "Q 1160 730 1160 764 " +
+      "L 1160 1260",
 
     stops: {
       hero: {
@@ -271,22 +251,22 @@ window.SPACES_HOME = {
 
       principle: {
         x: 355,
-        y: 650
+        y: 640
       },
 
       who: {
         x: 355,
-        y: 1070
+        y: 690
       },
 
       principles: {
         x: 1160,
-        y: 1070
+        y: 730
       },
 
       divisions: {
         x: 1160,
-        y: 1510
+        y: 1260
       }
     }
   },
@@ -294,23 +274,23 @@ window.SPACES_HOME = {
   routes: {
     hub: {
       x: 1160,
-      y: 1510
+      y: 1260
     },
     dataCenter: {
-      path: "M 1160 1510 L 355 1530",
-      target: { x: 355, y: 1530 },
+      path: "M 1160 1320 L 355 1340",
+      target: { x: 355, y: 1340 },
       duration: 1.15,
       ease: "power3.inOut"
     },
     it: {
-      path: "M 1160 1510 L 1160 2030",
-      target: { x: 1160, y: 2030 },
+      path: "M 1160 1320 L 1160 1840",
+      target: { x: 1160, y: 1840 },
       duration: 0.90,
       ease: "power3.inOut"
     },
     av: {
-      path: "M 1160 1510 L 1960 1530",
-      target: { x: 1960, y: 1530 },
+      path: "M 1160 1320 L 1960 1340",
+      target: { x: 1960, y: 1340 },
       duration: 1.15,
       ease: "power3.inOut"
     }
@@ -318,17 +298,17 @@ window.SPACES_HOME = {
 
   branchJourneys: {
     dataCenter: {
-      cameraStart: { x: 355, y: 1530 },
-      cameraEnd: { x: 355, y: 3980 },
-      cameraPath: "M 355 1530 L 355 3980",
+      cameraStart: { x: 355, y: 1340 },
+      cameraEnd: { x: 355, y: 3790 },
+      cameraPath: "M 355 1340 L 355 3790",
       cameraStops: [
-        { key: "intro", x: 355, y: 1530 },
-        { key: "service01", x: 355, y: 1980 },
-        { key: "service02", x: 355, y: 2380 },
-        { key: "service03", x: 355, y: 2780 },
-        { key: "service04", x: 355, y: 3180 },
-        { key: "service05", x: 355, y: 3580 },
-        { key: "service06", x: 355, y: 3980 }
+        { key: "intro", x: 355, y: 1340 },
+        { key: "service01", x: 355, y: 1790 },
+        { key: "service02", x: 355, y: 2190 },
+        { key: "service03", x: 355, y: 2590 },
+        { key: "service04", x: 355, y: 2990 },
+        { key: "service05", x: 355, y: 3390 },
+        { key: "service06", x: 355, y: 3790 }
       ],
       signals: [
         { key: "dc-service-01", d: "M 355 1700 L 355 1815 C 355 1850 390 1870 425 1870 C 448 1870 455 1888 455 1915 L 455 2000 C 455 2030 475 2048 505 2055 C 535 2062 520 2080 485 2095 C 440 2114 380 2135 355 2180", window: { from: 0.04, to: 0.23 } },
@@ -340,17 +320,17 @@ window.SPACES_HOME = {
       ]
     },
     it: {
-      cameraStart: { x: 1160, y: 2030 },
-      cameraEnd: { x: 1160, y: 4480 },
-      cameraPath: "M 1160 2030 L 1160 4480",
+      cameraStart: { x: 1160, y: 1840 },
+      cameraEnd: { x: 1160, y: 4290 },
+      cameraPath: "M 1160 1840 L 1160 4290",
       cameraStops: [
-        { key: "intro", x: 1160, y: 2030 },
-        { key: "service01", x: 1160, y: 2480 },
-        { key: "service02", x: 1160, y: 2880 },
-        { key: "service03", x: 1160, y: 3280 },
-        { key: "service04", x: 1160, y: 3680 },
-        { key: "service05", x: 1160, y: 4080 },
-        { key: "service06", x: 1160, y: 4480 }
+        { key: "intro", x: 1160, y: 1840 },
+        { key: "service01", x: 1160, y: 2290 },
+        { key: "service02", x: 1160, y: 2690 },
+        { key: "service03", x: 1160, y: 3090 },
+        { key: "service04", x: 1160, y: 3490 },
+        { key: "service05", x: 1160, y: 3890 },
+        { key: "service06", x: 1160, y: 4290 }
       ],
       signals: [
         {
@@ -367,17 +347,17 @@ window.SPACES_HOME = {
       ]
     },
     av: {
-      cameraStart: { x: 1960, y: 1530 },
-      cameraEnd: { x: 1960, y: 4150 },
-      cameraPath: "M 1960 1530 L 1960 4150",
+      cameraStart: { x: 1960, y: 1340 },
+      cameraEnd: { x: 1960, y: 3960 },
+      cameraPath: "M 1960 1340 L 1960 3960",
       cameraStops: [
-        { key: "intro", x: 1960, y: 1530 },
-        { key: "service01", x: 1960, y: 2000 },
-        { key: "service02", x: 1960, y: 2430 },
-        { key: "service03", x: 1960, y: 2860 },
-        { key: "service04", x: 1960, y: 3290 },
-        { key: "service05", x: 1960, y: 3720 },
-        { key: "service06", x: 1960, y: 4150 }
+        { key: "intro", x: 1960, y: 1340 },
+        { key: "service01", x: 1960, y: 1810 },
+        { key: "service02", x: 1960, y: 2240 },
+        { key: "service03", x: 1960, y: 2670 },
+        { key: "service04", x: 1960, y: 3100 },
+        { key: "service05", x: 1960, y: 3530 },
+        { key: "service06", x: 1960, y: 3960 }
       ],
       signals: [
         { key: "av-service-01", d: "M 1960 1700 C 1960 1765 2000 1815 2045 1845 C 2075 1865 2085 1895 2085 1930 L 2085 2010 C 2085 2040 2110 2058 2145 2068 C 2178 2077 2165 2102 2125 2125 C 2058 2162 1955 2185 1870 2200", window: { from: 0.04, to: 0.22 } },
@@ -389,17 +369,17 @@ window.SPACES_HOME = {
       ]
     },
     howWork: {
-      cameraStart: { x: 1160, y: 5030 },
-      cameraEnd: { x: 960, y: 6060 },
-      cameraPath: "M 1160 5030 L 1160 5453 Q 1160 5495 1202 5495 L 1918 5495 Q 1960 5495 1960 5537 L 1960 6018 Q 1960 6060 1918 6060 L 960 6060",
+      cameraStart: { x: 1160, y: 4840 },
+      cameraEnd: { x: 960, y: 5870 },
+      cameraPath: "M 1160 4840 L 1160 5263 Q 1160 5305 1202 5305 L 1918 5305 Q 1960 5305 1960 5347 L 1960 5828 Q 1960 5870 1918 5870 L 960 5870",
       cameraStops: [
-        { key: "entry", x: 1160, y: 5030 },
-        { key: "qualification", x: 1160, y: 5480 },
-        { key: "mobilization", x: 1450, y: 5495 },
-        { key: "readiness", x: 1910, y: 5495 },
-        { key: "execution", x: 1960, y: 5940 },
-        { key: "validation", x: 1460, y: 6060 },
-        { key: "handover", x: 960, y: 6060 }
+        { key: "entry", x: 1160, y: 4840 },
+        { key: "qualification", x: 1160, y: 5290 },
+        { key: "mobilization", x: 1450, y: 5305 },
+        { key: "readiness", x: 1910, y: 5305 },
+        { key: "execution", x: 1960, y: 5750 },
+        { key: "validation", x: 1460, y: 5870 },
+        { key: "handover", x: 960, y: 5870 }
       ],
       continuousSignal: {
         key: "how-signal-continuous",
@@ -421,45 +401,45 @@ window.SPACES_HOME = {
         { key: "how-stage-05", d: "M 1960 6070 C 1860 6060 1760 6075 1680 6100 C 1600 6125 1530 6170 1460 6210", window: { from: 0.63, to: 0.86 } },
         { key: "how-stage-06", d: "M 1460 6210 C 1360 6190 1270 6190 1200 6210 C 1145 6225 1110 6250 1100 6285 L 1100 6370", window: { from: 0.80, to: 1.00 } }
       ],
-      continuation: { x: 1100, y: 6370 }
+      continuation: { x: 1100, y: 6180 }
     },
     whySpaces: {
-      cameraStart: { x: 960, y: 6060 },
-      cameraEnd: { x: 1160, y: 7160 },
-      cameraPath: "M 960 6060 L 960 6503 Q 960 6545 1002 6545 L 1160 6545 L 1160 7160",
+      cameraStart: { x: 960, y: 5870 },
+      cameraEnd: { x: 1160, y: 6970 },
+      cameraPath: "M 960 5870 L 960 6313 Q 960 6355 1002 6355 L 1160 6355 L 1160 6970",
       cameraStops: [
-        { key: "entry", x: 960, y: 6060 },
-        { key: "intro", x: 1160, y: 6645 },
-        { key: "proof", x: 1160, y: 6945 },
-        { key: "exit", x: 1160, y: 7160 }
+        { key: "entry", x: 960, y: 5870 },
+        { key: "intro", x: 1160, y: 6455 },
+        { key: "proof", x: 1160, y: 6755 },
+        { key: "exit", x: 1160, y: 6970 }
       ],
       signal: {
         key: "why-signal-continuous",
         d: "M 1100 6370 L 1100 6600 C 1100 6640 1135 6660 1180 6660 C 1220 6660 1240 6690 1240 6720 C 1240 6750 1215 6775 1170 6790 C 1135 6802 1120 6825 1120 6855 C 1120 6885 1145 6905 1190 6915 C 1235 6925 1260 6950 1260 6980 C 1260 7010 1235 7030 1190 7040 C 1145 7050 1120 7075 1120 7105 C 1120 7135 1145 7155 1190 7165 C 1235 7175 1250 7200 1230 7225 C 1215 7245 1185 7260 1160 7280 L 1160 7420",
-        start: { x: 1100, y: 6370 },
-        end: { x: 1160, y: 7420 }
+        start: { x: 1100, y: 6180 },
+        end: { x: 1160, y: 7230 }
       },
-      continuation: { x: 1160, y: 7420 }
+      continuation: { x: 1160, y: 7230 }
     },
     finalCta: {
-      cameraStart: { x: 1160, y: 7160 },
-      cameraEnd: { x: 1160, y: 7630 },
-      cameraPath: "M 1160 7160 L 1160 7630",
+      cameraStart: { x: 1160, y: 6970 },
+      cameraEnd: { x: 1160, y: 7440 },
+      cameraPath: "M 1160 6970 L 1160 7440",
       cameraStops: [
-        { key: "entry", x: 1160, y: 7160 },
-        { key: "cta", x: 1160, y: 7630 }
+        { key: "entry", x: 1160, y: 6970 },
+        { key: "cta", x: 1160, y: 7440 }
       ],
       signal: {
         key: "cta-signal-continuous",
         d: "M 1160 7420 L 1160 7460 C 1160 7482 1175 7500 1200 7510",
-        start: { x: 1160, y: 7420 },
-        end: { x: 1200, y: 7510 }
+        start: { x: 1160, y: 7230 },
+        end: { x: 1200, y: 7320 }
       }
     }
   },
 
   howEntry: {
-    target: { x: 1160, y: 5030 },
+    target: { x: 1160, y: 4840 },
     trunk: {
       key: "how-entry-trunk",
       d: "M 1160 4950 L 1160 5220",
@@ -468,23 +448,23 @@ window.SPACES_HOME = {
     sources: {
       dataCenter: {
         key: "dc-to-how",
-        cameraPath: "M 355 3980 L 355 4988 Q 355 5030 397 5030 L 1160 5030",
+        cameraPath: "M 355 3790 L 355 4798 Q 355 4840 397 4840 L 1160 4840",
         cameraDuration: 1.65,
-        signalPath: "M 355 4180 C 370 4210 355 4290 355 4380 L 355 4840 C 355 4880 390 4908 430 4908 L 1118 4908 Q 1160 4908 1160 4950",
+        signalPath: "M 355 3800 C 370 3830 355 3910 355 4000 L 355 4460 C 355 4500 390 4528 430 4528 L 1118 4528 Q 1160 4528 1160 4570",
         revealDuration: 1.35
       },
       it: {
         key: "it-to-how",
-        cameraPath: "M 1160 4480 L 1160 5030",
+        cameraPath: "M 1160 4290 L 1160 4840",
         cameraDuration: 0.85,
-        signalPath: "M 1160 4680 C 1175 4710 1160 4750 1160 4790 L 1160 4950",
+        signalPath: "M 1160 4300 C 1175 4330 1160 4370 1160 4410 L 1160 4570",
         revealDuration: 0.60
       },
       av: {
         key: "av-to-how",
-        cameraPath: "M 1960 4150 L 1960 4988 Q 1960 5030 1918 5030 L 1160 5030",
+        cameraPath: "M 1960 3960 L 1960 4798 Q 1960 4840 1918 4840 L 1160 4840",
         cameraDuration: 1.55,
-        signalPath: "M 1960 4550 L 1960 4840 C 1960 4880 1925 4908 1885 4908 L 1202 4908 Q 1160 4908 1160 4950",
+        signalPath: "M 1960 4170 L 1960 4460 C 1960 4500 1925 4528 1885 4528 L 1202 4528 Q 1160 4528 1160 4570",
         revealDuration: 1.25
       }
     },
@@ -495,23 +475,23 @@ window.SPACES_HOME = {
   routeSignals: {
     dataCenter: {
       key: "route-dc",
-      d: "M 910 1550 C 877 1555 820 1548 760 1522 C 720 1505 690 1510 650 1510 L 397 1510 Q 355 1510 355 1552 L 355 1700",
-      start: { x: 910, y: 1550 },
-      end: { x: 355, y: 1700 },
+      d: "M 910 1360 C 877 1365 820 1358 760 1332 C 720 1315 690 1320 650 1320 L 397 1320 Q 355 1320 355 1362 L 355 1510",
+      start: { x: 910, y: 1360 },
+      end: { x: 355, y: 1510 },
       revealDuration: 0.90
     },
     it: {
       key: "route-it",
-      d: "M 1160 1550 L 1160 2230",
-      start: { x: 1160, y: 1550 },
-      end: { x: 1160, y: 2230 },
+      d: "M 1160 1360 L 1160 2040",
+      start: { x: 1160, y: 1360 },
+      end: { x: 1160, y: 2040 },
       revealDuration: 0.78
     },
     av: {
       key: "route-av",
-      d: "M 1410 1550 C 1443 1555 1500 1548 1560 1522 C 1600 1505 1630 1510 1670 1510 L 1918 1510 Q 1960 1510 1960 1552 L 1960 1700",
-      start: { x: 1410, y: 1550 },
-      end: { x: 1960, y: 1700 },
+      d: "M 1410 1360 C 1443 1365 1500 1358 1560 1332 C 1600 1315 1630 1320 1670 1320 L 1918 1320 Q 1960 1320 1960 1362 L 1960 1510",
+      start: { x: 1410, y: 1360 },
+      end: { x: 1960, y: 1510 },
       revealDuration: 0.90
     },
     retractDuration: 0.58,
@@ -530,133 +510,149 @@ window.SPACES_HOME = {
       {
         key: "principle-trunk",
 
-        /*
-         * Section 2 signal trunk. Its final origin geometry will be resolved
-         * with the Section 2 redesign; no signal piece exists in the Hero.
-         *
-         * World:
-         * (355,450)
-         *       |
-         *       |
-         * (355,850)
-         *
-         * (355,850) continues into the About sequence.
-         */
-        d:
-          "M 355 450 " +
-          "L 355 850",
+        /* About piece 1 — text interaction. */
+        d: "M 94 470 V 512 Q 94 524 106 524 H 430 Q 442 524 442 536 V 788",
 
         start: {
-          x: 355,
-          y: 450
+          x: 94,
+          y: 470
         },
 
         end: {
-          x: 355,
-          y: 850
+          x: 442,
+          y: 788
         },
 
         window: {
           mode: "arc",
-          from: 0.063,
-          to: 0.221
+          from: 0.146789,
+          to: 0.269656
         }
       },
 
       {
         key: "about-who",
 
-        d:
-          "M 355 850 " +
-          "L 355 1108 " +
-          "C 355 1135 380 1150 415 1150 " +
-          "L 740 1150",
+        d: "M 442 788 Q 442 800 454 800 H 760 Q 772 800 772 788",
 
         start: {
-          x: 355,
-          y: 850
+          x: 442,
+          y: 788
         },
 
         end: {
-          x: 740,
-          y: 1150
+          x: 772,
+          y: 788
         },
 
         window: {
           mode: "arc",
-          from: 0.284,
-          to: 0.443
+          from: 0.269656,
+          to: 0.345000
+        }
+      },
+
+      {
+        key: "about-who-rise",
+
+        d: "M 772 788 V 642 Q 772 630 784 630 H 1128",
+
+        start: {
+          x: 772,
+          y: 788
+        },
+
+        end: {
+          x: 1128,
+          y: 630
+        },
+
+        window: {
+          mode: "arc",
+          from: 0.345000,
+          to: 0.605018
         }
       },
 
       {
         key: "about-principles",
 
-        d:
-          "M 740 1150 " +
-          "C 800 1150 820 1122 850 1122 " +
-          "C 880 1122 900 1150 930 1150 " +
-          "C 995 1150 1020 1122 1080 1122 " +
-          "C 1110 1122 1130 1150 1160 1150 " +
-          "C 1215 1150 1240 1122 1310 1122 " +
-          "C 1340 1122 1360 1150 1390 1150 " +
-          "C 1425 1150 1438 1172 1428 1194 " +
-          "C 1405 1238 1260 1218 1195 1242 " +
-          "C 1170 1252 1160 1258 1160 1270",
+        d: "M 1128 630 Q 1140 630 1140 642 V 788 Q 1140 800 1152 800 H 1388",
 
         start: {
-          x: 740,
-          y: 1150
+          x: 1128,
+          y: 630
         },
 
         end: {
-          x: 1160,
-          y: 1270
+          x: 1388,
+          y: 800
         },
 
         window: {
           mode: "arc",
-          from: 0.427,
-          to: 0.775
+          from: 0.605018,
+          to: 0.726022
+        }
+      },
+
+      {
+        key: "about-exit",
+        d: "M 1388 800 Q 1400 800 1400 812 V 938 Q 1400 950 1388 950 H 1152 Q 1140 950 1140 962 V 1020",
+
+        start: {
+          x: 1388,
+          y: 800
+        },
+
+        end: {
+          x: 1140,
+          y: 1020
+        },
+
+        window: {
+          mode: "arc",
+          from: 0.749916,
+          to: 0.869521
         }
       },
 
       {
         key: "divisions-feed",
-        d: "M 1160 1270 L 1160 1475",
+        d: "M 1140 1020 V 1225 H 1160",
 
         start: {
-          x: 1160,
-          y: 1270
+          x: 1140,
+          y: 1020
         },
 
         end: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         window: {
           mode: "arc",
-          from: 0.760,
-          to: 0.870
+          from: 0.869521,
+          to: 0.980972
         }
       },
 
       {
         key: "division-dc",
         d:
-          "M 1160 1475 " +
-          "C 1095 1475 1055 1493 1005 1517 " +
-          "C 970 1534 943 1545 910 1550",
+          "M 1160 1225 " +
+          "C 1095 1225 1055 1243 1005 1267 " +
+          "C 970 1284 943 1295 910 1300",
 
         start: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         end: {
           x: 910,
-          y: 1550
+          y: 1300
         },
 
         window: {
@@ -668,16 +664,16 @@ window.SPACES_HOME = {
 
       {
         key: "division-it",
-        d: "M 1160 1475 C 1160 1500 1160 1525 1160 1550",
+        d: "M 1160 1225 C 1160 1250 1160 1275 1160 1300",
 
         start: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         end: {
           x: 1160,
-          y: 1550
+          y: 1300
         },
 
         window: {
@@ -690,18 +686,18 @@ window.SPACES_HOME = {
       {
         key: "division-av",
         d:
-          "M 1160 1475 " +
-          "C 1225 1475 1265 1493 1315 1517 " +
-          "C 1350 1534 1377 1545 1410 1550",
+          "M 1160 1225 " +
+          "C 1225 1225 1265 1243 1315 1267 " +
+          "C 1350 1284 1377 1295 1410 1300",
 
         start: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         end: {
           x: 1410,
-          y: 1550
+          y: 1300
         },
 
         window: {
@@ -718,8 +714,8 @@ window.SPACES_HOME = {
         to: "about-who",
 
         point: {
-          x: 355,
-          y: 850
+          x: 442,
+          y: 788
         },
 
         departure: 0
@@ -727,11 +723,23 @@ window.SPACES_HOME = {
 
       {
         from: "about-who",
+        to: "about-who-rise",
+
+        point: {
+          x: 772,
+          y: 788
+        },
+
+        departure: 0
+      },
+
+      {
+        from: "about-who-rise",
         to: "about-principles",
 
         point: {
-          x: 740,
-          y: 1150
+          x: 1128,
+          y: 630
         },
 
         departure: 0
@@ -739,11 +747,23 @@ window.SPACES_HOME = {
 
       {
         from: "about-principles",
+        to: "about-exit",
+
+        point: {
+          x: 1388,
+          y: 800
+        },
+
+        departure: 0
+      },
+
+      {
+        from: "about-exit",
         to: "divisions-feed",
 
         point: {
-          x: 1160,
-          y: 1270
+          x: 1140,
+          y: 1020
         },
 
         departure: 0
@@ -755,7 +775,7 @@ window.SPACES_HOME = {
 
         point: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         departure: 0
@@ -767,7 +787,7 @@ window.SPACES_HOME = {
 
         point: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         departure: 0
@@ -779,7 +799,7 @@ window.SPACES_HOME = {
 
         point: {
           x: 1160,
-          y: 1475
+          y: 1225
         },
 
         departure: 0
@@ -789,17 +809,17 @@ window.SPACES_HOME = {
     divisionContinuations: {
       dataCenter: {
         x: 910,
-        y: 1550,
+          y: 1300,
         direction: "left"
       },
       it: {
         x: 1160,
-        y: 1550,
+          y: 1300,
         direction: "down"
       },
       av: {
         x: 1410,
-        y: 1550,
+          y: 1300,
         direction: "right"
       }
     }
@@ -817,25 +837,16 @@ window.SPACES_HOME = {
 
       x0: 0,
       y0: 450,
-      x1: 740,
-      y1: 850
-    },
-    {
-      chapter: "c03",
-      className: "on-paper",
-
-      x0: 0,
-      y0: 850,
-      x1: 740,
-      y1: 1270
+      x1: 1540,
+      y1: 1080
     },
     {
       chapter: "how-work-main",
       className: "on-paper",
       x0: 0,
-      y0: 5330,
+      y0: 5140,
       x1: 2340,
-      y1: 6470
+      y1: 6280
     }
   ]
 };
