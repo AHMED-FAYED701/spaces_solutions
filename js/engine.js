@@ -42,6 +42,25 @@
     return v;
   }
 
+  /* Keep the About process rows anchored to the HOW WE DELIVER reveal. */
+  window.addEventListener("spaces:progress", function (event) {
+    if (window.innerWidth <= MOBILE_MAX || !window.gsap) return;
+
+    var rows = document.querySelectorAll(".about-process li");
+    var progress = event.detail && event.detail.arcProgress;
+    if (!rows.length || typeof progress !== "number") return;
+
+    var amount = clamp01(
+      (progress - 0.484014) / (0.517015 - 0.484014)
+    );
+    amount = amount * amount * (3 - 2 * amount);
+
+    window.gsap.set(rows, {
+      opacity: amount,
+      y: (1 - amount) * 10
+    });
+  });
+
   /*
    * Build an invisible SVG path so the browser can give us:
    *

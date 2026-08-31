@@ -97,6 +97,22 @@
     setControlsReady(lastArcProgress >= 0.985 && activeRoute === "hub");
   }
 
+  function renderHubReveals(progress) {
+    function reveal(selector, from, to) {
+      var value = clamp((progress - from) / (to - from), 0, 1);
+      document.querySelectorAll(selector).forEach(function (element) {
+        element.style.opacity = String(value);
+        element.style.transform = "translateY(" + (10 * (1 - value)) + "px)";
+      });
+    }
+    reveal(".divisions-kicker", 0.905, 0.925);
+    reveal(".divisions-headline", 0.915, 0.940);
+    reveal(".divisions-support", 0.930, 0.950);
+    reveal('.division-lane[data-route-target="av"]', 0.966, 0.994);
+    reveal('.division-lane[data-route-target="it"]', 0.970, 0.997);
+    reveal('.division-lane[data-route-target="dataCenter"]', 0.974, 1.000);
+  }
+
   function preventScroll(event) {
     event.preventDefault();
   }
@@ -185,6 +201,9 @@
   }
 
   function renderDcSignals(progress) {
+    document.querySelectorAll(".dc-service").forEach(function (service, index) {
+      service.classList.toggle("is-active", progress >= Math.max(0, index / 6 - 0.06));
+    });
     dcRuns.forEach(function (group) {
       var range = group.definition.window.to - group.definition.window.from;
       var reveal = clamp(
@@ -225,6 +244,9 @@
   }
 
   function renderItSignals(progress) {
+    document.querySelectorAll(".it-service").forEach(function (service, index) {
+      service.classList.toggle("is-active", progress >= Math.max(0, index / 6 - 0.06));
+    });
     itRuns.forEach(function (group) {
       var range = group.definition.window.to - group.definition.window.from;
       var reveal = clamp((progress - group.definition.window.from) / range, 0, 1);
@@ -259,6 +281,9 @@
   }
 
   function renderAvSignals(progress) {
+    document.querySelectorAll(".av-service").forEach(function (service, index) {
+      service.classList.toggle("is-active", progress >= Math.max(0, index / 6 - 0.06));
+    });
     avRuns.forEach(function (group) {
       var range = group.definition.window.to - group.definition.window.from;
       var reveal = clamp((progress - group.definition.window.from) / range, 0, 1);
@@ -978,7 +1003,7 @@
       dcJourney.cameraEnd.y
     );
     renderDcSignals(dcProgress());
-    runtime.moveCameraTo({ x: 355, y: dcTargetY }, 0.34, "power2.out");
+    runtime.moveCameraTo({ x: 1960, y: dcTargetY }, 0.34, "power2.out");
   }
 
   function moveItCamera(deltaPixels, allowHowEntry) {
@@ -1010,7 +1035,7 @@
       avJourney.cameraEnd.y
     );
     renderAvSignals(avProgress());
-    runtime.moveCameraTo({ x: 1960, y: avTargetY }, 0.34, "power2.out");
+    runtime.moveCameraTo({ x: 355, y: avTargetY }, 0.34, "power2.out");
   }
 
   function onWheel(event) {
@@ -1287,6 +1312,7 @@
 
     window.addEventListener("spaces:progress", function (event) {
       lastArcProgress = event.detail.arcProgress;
+      renderHubReveals(lastArcProgress);
       updateHubReady();
     });
   }

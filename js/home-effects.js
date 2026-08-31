@@ -20,6 +20,15 @@
   var heroBody = document.querySelector(".hero-body");
   var heroCta = document.querySelector(".hero-cta");
   var heroCue = document.querySelector(".hero-cue");
+  if (heroCue) {
+    heroCue.addEventListener("click", function () {
+      var distance = window.innerHeight * 0.75;
+      window.scrollTo({
+        top: window.scrollY + distance,
+        behavior: "smooth"
+      });
+    });
+  }
   var heroEntranceTargets = [heroEyebrow, heroBody, heroCta, heroCue]
     .concat(Array.prototype.slice.call(heroLines))
     .filter(Boolean);
