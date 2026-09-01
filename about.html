@@ -133,6 +133,11 @@ header,.hdr__title,.hdr__menu i,.hdr__typo{transition:background .35s,color .35s
   border:.11rem solid var(--plum-500);background:var(--paper);
   display:flex;align-items:center;justify-content:center}
 .node::after{content:'';width:.28rem;height:.28rem;border-radius:50%;background:var(--plum-500)}
+.hero-division-reveal{opacity:0;transform:translateY(.6rem);will-change:opacity,transform}
+.hero-division-number{z-index:4;font-family:'DM Mono',monospace;font-size:.44rem;font-weight:400;
+  letter-spacing:.18em;color:var(--amethyst-400)}
+.hero-division-name{z-index:4;font-family:Alexandria,sans-serif;font-size:.56rem;font-weight:600;
+  line-height:1.25;color:#fff}
 /* screen 2 at about-big2's scale — a frame per row buys back the room for it */
 .idx.big{font-size:2rem;font-weight:300;letter-spacing:.02em;color:#fff}
 .screen2 .lbl{font-size:.7rem;letter-spacing:.14em;width:15.5rem}
@@ -189,6 +194,11 @@ header,.hdr__title,.hdr__menu i,.hdr__typo{transition:background .35s,color .35s
   background-size:.44rem .05rem,.05rem .44rem;background-position:2rem 3rem,2rem 3rem;
   -webkit-mask-image:linear-gradient(75deg,#000 22%,transparent 46%);
   mask-image:linear-gradient(75deg,#000 22%,transparent 46%)}
+/* screen 3 is authored at y=1660 while screen 2 ends at 1620, so the body ground
+   showed through as a 40u strip. The CTA's ground and texture reach 4rem upward to
+   close it; nothing about screen 3's origin or its content moves. */
+.screen3 .ground{top:-4rem}
+.screen3 .crosses{top:-4rem}
 .a-icon{z-index:4;width:1.9rem;height:1.9rem;color:var(--amethyst-400);opacity:.85}
 .a-text{z-index:4;width:8rem;font-family:'DM Mono',monospace;font-size:.46rem;
   letter-spacing:.14em;text-transform:uppercase;line-height:1.7;
@@ -267,8 +277,16 @@ header,.hdr__title,.hdr__menu i,.hdr__typo{transition:background .35s,color .35s
       <div class="screen screen1">
         <div class="ground"></div><div class="grid"></div><div class="dotfield"></div>
 
-        <h1 class="h1 rise" style="left:30.0rem;top:22.2rem;width:30rem">Spaces<br>Solutions</h1>
-        <p class="sub rise" style="left:30.0rem;top:31.8rem;width:28rem">we're the engineers<br>behind the <em>signal.</em></p>
+        <div class="kick rise" style="left:7.0rem;top:19.8rem;width:34rem">ABOUT SPACES SOLUTIONS</div>
+        <h1 class="h1 rise" style="left:7.0rem;top:22.4rem;width:39rem;font-size:3.25rem;line-height:1.04;font-weight:600">One partner connecting<br>every layer of your<br>technology environment.</h1>
+        <p class="body rise" style="left:7.0rem;top:35.0rem;width:35rem;font-size:.82rem;line-height:1.65">Data Center Facilities, IT Infrastructure and Audiovisual Solutions &mdash; designed, engineered and delivered through one coordinated approach.</p>
+
+        <div class="hero-division-number hero-division-reveal" data-hero-division="1" style="left:57.5rem;top:32.6rem">01</div>
+        <div class="hero-division-name hero-division-reveal" data-hero-division="1" style="left:59.8rem;top:32.4rem;width:9.2rem">DATA CENTER FACILITIES</div>
+        <div class="hero-division-number hero-division-reveal" data-hero-division="2" style="left:57.5rem;top:36.6rem">02</div>
+        <div class="hero-division-name hero-division-reveal" data-hero-division="2" style="left:59.8rem;top:36.4rem;width:9.2rem">IT INFRASTRUCTURE</div>
+        <div class="hero-division-number hero-division-reveal" data-hero-division="3" style="left:57.5rem;top:40.6rem">03</div>
+        <div class="hero-division-name hero-division-reveal" data-hero-division="3" style="left:59.8rem;top:40.4rem;width:9.2rem">AUDIOVISUAL SOLUTIONS</div>
 
         <div class="kick rise" style="left:6.0rem;top:58.2rem">who we are</div>
         <div class="rule rise" style="left:6.0rem;top:60.4rem"></div>
@@ -278,51 +296,49 @@ header,.hdr__title,.hdr__menu i,.hdr__typo{transition:background .35s,color .35s
           integration together as one disciplined programme, with one point of
           accountability.</p>
 
-        <div class="kick rise" style="left:11.0rem;top:90.0rem">what never changes</div>
-        <div class="rule rise" style="left:11.0rem;top:91.8rem"></div>
         <h2 class="h2 rise" style="left:11.0rem;top:93.2rem;width:44rem;color:#9d92a8"><b>precision</b> in the system.<br><b>perfection</b> at the surface.</h2>
         <p class="body rise" style="left:11.0rem;top:100.2rem;width:30rem">Three principles guide every environment we engineer.</p>
-      <div class="idx rise" style="left:11.0rem;top:108.2rem">01</div>
-      <div class="idx-rule rise" style="left:11.0rem;top:110.8rem"></div>
+      <div class="idx rise" style="left:12.9rem;top:107.5rem;width:2.2rem;text-align:center">01</div>
+      <div class="idx-rule rise" style="left:12.9rem;top:110.1rem"></div>
       <h3 class="lbl rise" style="left:11.0rem;top:112.0rem">smart by default</h3>
       <p class="cbody rise" style="left:11.0rem;top:113.6rem">Network-native. Connected.<br>Continuously monitorable.</p>
-      <div class="idx rise" style="left:31.0rem;top:108.2rem">02</div>
-      <div class="idx-rule rise" style="left:31.0rem;top:110.8rem"></div>
+      <div class="idx rise" style="left:32.9rem;top:107.5rem;width:2.2rem;text-align:center">02</div>
+      <div class="idx-rule rise" style="left:32.9rem;top:110.1rem"></div>
       <h3 class="lbl rise" style="left:31.0rem;top:112.0rem">finished, not framed</h3>
       <p class="cbody rise" style="left:31.0rem;top:113.6rem">Engineering resolved down<br>to the millimetre.</p>
-      <div class="idx rise" style="left:51.0rem;top:108.2rem">03</div>
-      <div class="idx-rule rise" style="left:51.0rem;top:110.8rem"></div>
+      <div class="idx rise" style="left:52.9rem;top:107.5rem;width:2.2rem;text-align:center">03</div>
+      <div class="idx-rule rise" style="left:52.9rem;top:110.1rem"></div>
       <h3 class="lbl rise" style="left:51.0rem;top:112.0rem">future-ready</h3>
       <p class="cbody rise" style="left:51.0rem;top:113.6rem">Scalable, resilient infrastructure<br>built to evolve.</p>
         <div class="cue rise" style="left:11.0rem;top:116.2rem">to how spaces works &nbsp;&rarr;</div>
 
-        <svg class="sig sig-0" data-coverage="decoration" viewBox="0 0 332.0 211.7" style="left:-4.200rem;top:13.346rem;width:33.200rem;height:21.172rem" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(42.00 -133.46)"><path class="sig-halo" d="M -14.00 242.00 C -13.52 242.00 -12.08 242.00 -11.12 242.00 C -10.17 242.00 -9.21 242.00 -8.25 242.00 C -7.29 242.00 -6.33 242.00 -5.38 242.00 C -4.42 242.00 -3.46 242.00 -2.50 242.00 C -1.54 242.00 -0.58 242.00 0.38 242.00 C 1.33 242.00 2.29 242.00 3.25 242.00 C 4.21 242.00 5.17 242.00 6.12 242.00 C 7.08 242.00 8.04 242.00 9.00 242.00 C 9.96 242.00 10.92 242.00 11.88 242.00 C 12.83 242.00 13.79 242.00 14.75 242.00 C 15.71 242.00 16.67 242.00 17.62 242.00 C 18.58 242.00 19.54 242.00 20.50 242.00 C 21.46 242.00 22.42 242.00 23.38 242.00 C 24.33 242.00 25.29 242.00 26.25 242.00 C 27.21 242.00 28.17 242.07 29.12 242.00 C 30.08 241.93 31.04 241.89 32.00 241.57 C 32.96 241.24 33.92 240.69 34.88 240.07 C 35.83 239.45 36.79 238.66 37.75 237.84 C 38.71 237.02 39.67 236.07 40.62 235.15 C 41.58 234.23 42.54 233.21 43.50 232.32 C 44.46 231.43 45.42 230.51 46.38 229.81 C 47.33 229.11 48.29 228.45 49.25 228.10 C 50.21 227.75 51.17 227.55 52.12 227.70 C 53.08 227.86 54.04 228.26 55.00 229.06 C 55.96 229.85 56.92 230.97 57.88 232.46 C 58.83 233.95 59.79 235.83 60.75 238.01 C 61.71 240.19 62.67 242.77 63.62 245.53 C 64.58 248.29 65.54 251.43 66.50 254.58 C 67.46 257.72 68.42 261.16 69.38 264.40 C 70.33 267.64 71.29 271.04 72.25 274.03 C 73.21 277.02 74.17 279.98 75.12 282.34 C 76.08 284.70 77.04 286.82 78.00 288.18 C 78.96 289.55 79.92 290.46 80.88 290.52 C 81.83 290.59 82.79 290.01 83.75 288.58 C 84.71 287.15 85.67 284.93 86.62 281.96 C 87.58 278.99 88.54 275.15 89.50 270.75 C 90.46 266.35 91.42 261.10 92.38 255.55 C 93.33 250.01 94.29 243.73 95.25 237.47 C 96.21 231.22 97.17 224.44 98.12 218.03 C 99.08 211.63 100.04 204.98 101.00 199.03 C 101.96 193.08 102.92 187.23 103.88 182.34 C 104.83 177.46 105.79 173.02 106.75 169.74 C 107.71 166.46 108.67 163.94 109.62 162.65 C 110.58 161.36 111.54 161.09 112.50 162.00 C 113.46 162.90 114.42 164.99 115.38 168.08 C 116.33 171.16 117.29 175.48 118.25 180.51 C 119.21 185.54 120.17 191.72 121.12 198.26 C 122.08 204.79 123.04 212.28 124.00 219.72 C 124.96 227.17 125.92 235.26 126.88 242.94 C 127.83 250.61 128.79 258.56 129.75 265.76 C 130.71 272.96 131.67 280.04 132.62 286.12 C 133.58 292.20 134.54 297.79 135.50 302.24 C 136.46 306.69 137.42 310.33 138.38 312.80 C 139.33 315.28 140.29 316.72 141.25 317.09 C 142.21 317.47 143.17 316.69 144.12 315.05 C 145.08 313.40 146.04 310.61 147.00 307.23 C 147.96 303.84 148.92 299.42 149.88 294.72 C 150.83 290.01 151.79 284.49 152.75 279.00 C 153.71 273.50 154.67 267.47 155.62 261.74 C 156.58 256.01 157.54 250.05 158.50 244.62 C 159.46 239.19 160.42 233.84 161.38 229.16 C 162.33 224.49 163.29 220.16 164.25 216.57 C 165.21 212.98 166.17 209.94 167.12 207.63 C 168.08 205.32 169.04 203.69 170.00 202.71 C 170.96 201.72 171.92 201.46 172.88 201.70 C 173.83 201.95 174.79 202.89 175.75 204.17 C 176.71 205.45 177.67 207.34 178.62 209.38 C 179.58 211.43 180.54 213.93 181.50 216.44 C 182.46 218.94 183.42 221.74 184.38 224.40 C 185.33 227.06 186.29 229.84 187.25 232.39 C 188.21 234.93 189.17 237.45 190.12 239.66 C 191.08 241.88 192.04 243.94 193.00 245.69 C 193.96 247.44 194.92 248.95 195.88 250.16 C 196.83 251.37 197.79 252.28 198.75 252.95 C 199.71 253.62 200.67 253.99 201.62 254.16 C 202.58 254.34 203.54 254.24 204.50 254.02 C 205.46 253.80 206.42 253.34 207.38 252.84 C 208.33 252.33 209.29 251.65 210.25 250.97 C 211.21 250.29 212.17 249.50 213.12 248.76 C 214.08 248.02 215.04 247.23 216.00 246.52 C 216.96 245.80 217.92 245.09 218.88 244.47 C 219.83 243.84 220.79 243.26 221.75 242.77 C 222.71 242.27 223.67 241.85 224.62 241.50 C 225.58 241.14 226.54 240.87 227.50 240.66 C 228.46 240.45 229.42 240.32 230.38 240.23 C 231.33 240.14 232.29 240.12 233.25 240.13 C 234.21 240.13 235.17 240.19 236.12 240.26 C 237.08 240.33 238.04 240.44 239.00 240.55 C 239.96 240.65 240.92 240.78 241.88 240.89 C 242.83 241.01 243.79 241.13 244.75 241.24 C 245.71 241.35 246.67 241.46 247.62 241.55 C 248.58 241.64 249.54 241.72 250.50 241.78 C 251.46 241.85 252.42 241.90 253.38 241.94 C 254.33 241.98 255.29 242.00 256.25 242.01 C 257.21 242.02 258.17 242.00 259.12 242.00 C 260.08 242.00 261.52 242.00 262.00 242.00"/><path class="sig-glow" d="M -14.00 242.00 C -13.52 242.00 -12.08 242.00 -11.12 242.00 C -10.17 242.00 -9.21 242.00 -8.25 242.00 C -7.29 242.00 -6.33 242.00 -5.38 242.00 C -4.42 242.00 -3.46 242.00 -2.50 242.00 C -1.54 242.00 -0.58 242.00 0.38 242.00 C 1.33 242.00 2.29 242.00 3.25 242.00 C 4.21 242.00 5.17 242.00 6.12 242.00 C 7.08 242.00 8.04 242.00 9.00 242.00 C 9.96 242.00 10.92 242.00 11.88 242.00 C 12.83 242.00 13.79 242.00 14.75 242.00 C 15.71 242.00 16.67 242.00 17.62 242.00 C 18.58 242.00 19.54 242.00 20.50 242.00 C 21.46 242.00 22.42 242.00 23.38 242.00 C 24.33 242.00 25.29 242.00 26.25 242.00 C 27.21 242.00 28.17 242.07 29.12 242.00 C 30.08 241.93 31.04 241.89 32.00 241.57 C 32.96 241.24 33.92 240.69 34.88 240.07 C 35.83 239.45 36.79 238.66 37.75 237.84 C 38.71 237.02 39.67 236.07 40.62 235.15 C 41.58 234.23 42.54 233.21 43.50 232.32 C 44.46 231.43 45.42 230.51 46.38 229.81 C 47.33 229.11 48.29 228.45 49.25 228.10 C 50.21 227.75 51.17 227.55 52.12 227.70 C 53.08 227.86 54.04 228.26 55.00 229.06 C 55.96 229.85 56.92 230.97 57.88 232.46 C 58.83 233.95 59.79 235.83 60.75 238.01 C 61.71 240.19 62.67 242.77 63.62 245.53 C 64.58 248.29 65.54 251.43 66.50 254.58 C 67.46 257.72 68.42 261.16 69.38 264.40 C 70.33 267.64 71.29 271.04 72.25 274.03 C 73.21 277.02 74.17 279.98 75.12 282.34 C 76.08 284.70 77.04 286.82 78.00 288.18 C 78.96 289.55 79.92 290.46 80.88 290.52 C 81.83 290.59 82.79 290.01 83.75 288.58 C 84.71 287.15 85.67 284.93 86.62 281.96 C 87.58 278.99 88.54 275.15 89.50 270.75 C 90.46 266.35 91.42 261.10 92.38 255.55 C 93.33 250.01 94.29 243.73 95.25 237.47 C 96.21 231.22 97.17 224.44 98.12 218.03 C 99.08 211.63 100.04 204.98 101.00 199.03 C 101.96 193.08 102.92 187.23 103.88 182.34 C 104.83 177.46 105.79 173.02 106.75 169.74 C 107.71 166.46 108.67 163.94 109.62 162.65 C 110.58 161.36 111.54 161.09 112.50 162.00 C 113.46 162.90 114.42 164.99 115.38 168.08 C 116.33 171.16 117.29 175.48 118.25 180.51 C 119.21 185.54 120.17 191.72 121.12 198.26 C 122.08 204.79 123.04 212.28 124.00 219.72 C 124.96 227.17 125.92 235.26 126.88 242.94 C 127.83 250.61 128.79 258.56 129.75 265.76 C 130.71 272.96 131.67 280.04 132.62 286.12 C 133.58 292.20 134.54 297.79 135.50 302.24 C 136.46 306.69 137.42 310.33 138.38 312.80 C 139.33 315.28 140.29 316.72 141.25 317.09 C 142.21 317.47 143.17 316.69 144.12 315.05 C 145.08 313.40 146.04 310.61 147.00 307.23 C 147.96 303.84 148.92 299.42 149.88 294.72 C 150.83 290.01 151.79 284.49 152.75 279.00 C 153.71 273.50 154.67 267.47 155.62 261.74 C 156.58 256.01 157.54 250.05 158.50 244.62 C 159.46 239.19 160.42 233.84 161.38 229.16 C 162.33 224.49 163.29 220.16 164.25 216.57 C 165.21 212.98 166.17 209.94 167.12 207.63 C 168.08 205.32 169.04 203.69 170.00 202.71 C 170.96 201.72 171.92 201.46 172.88 201.70 C 173.83 201.95 174.79 202.89 175.75 204.17 C 176.71 205.45 177.67 207.34 178.62 209.38 C 179.58 211.43 180.54 213.93 181.50 216.44 C 182.46 218.94 183.42 221.74 184.38 224.40 C 185.33 227.06 186.29 229.84 187.25 232.39 C 188.21 234.93 189.17 237.45 190.12 239.66 C 191.08 241.88 192.04 243.94 193.00 245.69 C 193.96 247.44 194.92 248.95 195.88 250.16 C 196.83 251.37 197.79 252.28 198.75 252.95 C 199.71 253.62 200.67 253.99 201.62 254.16 C 202.58 254.34 203.54 254.24 204.50 254.02 C 205.46 253.80 206.42 253.34 207.38 252.84 C 208.33 252.33 209.29 251.65 210.25 250.97 C 211.21 250.29 212.17 249.50 213.12 248.76 C 214.08 248.02 215.04 247.23 216.00 246.52 C 216.96 245.80 217.92 245.09 218.88 244.47 C 219.83 243.84 220.79 243.26 221.75 242.77 C 222.71 242.27 223.67 241.85 224.62 241.50 C 225.58 241.14 226.54 240.87 227.50 240.66 C 228.46 240.45 229.42 240.32 230.38 240.23 C 231.33 240.14 232.29 240.12 233.25 240.13 C 234.21 240.13 235.17 240.19 236.12 240.26 C 237.08 240.33 238.04 240.44 239.00 240.55 C 239.96 240.65 240.92 240.78 241.88 240.89 C 242.83 241.01 243.79 241.13 244.75 241.24 C 245.71 241.35 246.67 241.46 247.62 241.55 C 248.58 241.64 249.54 241.72 250.50 241.78 C 251.46 241.85 252.42 241.90 253.38 241.94 C 254.33 241.98 255.29 242.00 256.25 242.01 C 257.21 242.02 258.17 242.00 259.12 242.00 C 260.08 242.00 261.52 242.00 262.00 242.00"/><path class="sig-core" d="M -14.00 242.00 C -13.52 242.00 -12.08 242.00 -11.12 242.00 C -10.17 242.00 -9.21 242.00 -8.25 242.00 C -7.29 242.00 -6.33 242.00 -5.38 242.00 C -4.42 242.00 -3.46 242.00 -2.50 242.00 C -1.54 242.00 -0.58 242.00 0.38 242.00 C 1.33 242.00 2.29 242.00 3.25 242.00 C 4.21 242.00 5.17 242.00 6.12 242.00 C 7.08 242.00 8.04 242.00 9.00 242.00 C 9.96 242.00 10.92 242.00 11.88 242.00 C 12.83 242.00 13.79 242.00 14.75 242.00 C 15.71 242.00 16.67 242.00 17.62 242.00 C 18.58 242.00 19.54 242.00 20.50 242.00 C 21.46 242.00 22.42 242.00 23.38 242.00 C 24.33 242.00 25.29 242.00 26.25 242.00 C 27.21 242.00 28.17 242.07 29.12 242.00 C 30.08 241.93 31.04 241.89 32.00 241.57 C 32.96 241.24 33.92 240.69 34.88 240.07 C 35.83 239.45 36.79 238.66 37.75 237.84 C 38.71 237.02 39.67 236.07 40.62 235.15 C 41.58 234.23 42.54 233.21 43.50 232.32 C 44.46 231.43 45.42 230.51 46.38 229.81 C 47.33 229.11 48.29 228.45 49.25 228.10 C 50.21 227.75 51.17 227.55 52.12 227.70 C 53.08 227.86 54.04 228.26 55.00 229.06 C 55.96 229.85 56.92 230.97 57.88 232.46 C 58.83 233.95 59.79 235.83 60.75 238.01 C 61.71 240.19 62.67 242.77 63.62 245.53 C 64.58 248.29 65.54 251.43 66.50 254.58 C 67.46 257.72 68.42 261.16 69.38 264.40 C 70.33 267.64 71.29 271.04 72.25 274.03 C 73.21 277.02 74.17 279.98 75.12 282.34 C 76.08 284.70 77.04 286.82 78.00 288.18 C 78.96 289.55 79.92 290.46 80.88 290.52 C 81.83 290.59 82.79 290.01 83.75 288.58 C 84.71 287.15 85.67 284.93 86.62 281.96 C 87.58 278.99 88.54 275.15 89.50 270.75 C 90.46 266.35 91.42 261.10 92.38 255.55 C 93.33 250.01 94.29 243.73 95.25 237.47 C 96.21 231.22 97.17 224.44 98.12 218.03 C 99.08 211.63 100.04 204.98 101.00 199.03 C 101.96 193.08 102.92 187.23 103.88 182.34 C 104.83 177.46 105.79 173.02 106.75 169.74 C 107.71 166.46 108.67 163.94 109.62 162.65 C 110.58 161.36 111.54 161.09 112.50 162.00 C 113.46 162.90 114.42 164.99 115.38 168.08 C 116.33 171.16 117.29 175.48 118.25 180.51 C 119.21 185.54 120.17 191.72 121.12 198.26 C 122.08 204.79 123.04 212.28 124.00 219.72 C 124.96 227.17 125.92 235.26 126.88 242.94 C 127.83 250.61 128.79 258.56 129.75 265.76 C 130.71 272.96 131.67 280.04 132.62 286.12 C 133.58 292.20 134.54 297.79 135.50 302.24 C 136.46 306.69 137.42 310.33 138.38 312.80 C 139.33 315.28 140.29 316.72 141.25 317.09 C 142.21 317.47 143.17 316.69 144.12 315.05 C 145.08 313.40 146.04 310.61 147.00 307.23 C 147.96 303.84 148.92 299.42 149.88 294.72 C 150.83 290.01 151.79 284.49 152.75 279.00 C 153.71 273.50 154.67 267.47 155.62 261.74 C 156.58 256.01 157.54 250.05 158.50 244.62 C 159.46 239.19 160.42 233.84 161.38 229.16 C 162.33 224.49 163.29 220.16 164.25 216.57 C 165.21 212.98 166.17 209.94 167.12 207.63 C 168.08 205.32 169.04 203.69 170.00 202.71 C 170.96 201.72 171.92 201.46 172.88 201.70 C 173.83 201.95 174.79 202.89 175.75 204.17 C 176.71 205.45 177.67 207.34 178.62 209.38 C 179.58 211.43 180.54 213.93 181.50 216.44 C 182.46 218.94 183.42 221.74 184.38 224.40 C 185.33 227.06 186.29 229.84 187.25 232.39 C 188.21 234.93 189.17 237.45 190.12 239.66 C 191.08 241.88 192.04 243.94 193.00 245.69 C 193.96 247.44 194.92 248.95 195.88 250.16 C 196.83 251.37 197.79 252.28 198.75 252.95 C 199.71 253.62 200.67 253.99 201.62 254.16 C 202.58 254.34 203.54 254.24 204.50 254.02 C 205.46 253.80 206.42 253.34 207.38 252.84 C 208.33 252.33 209.29 251.65 210.25 250.97 C 211.21 250.29 212.17 249.50 213.12 248.76 C 214.08 248.02 215.04 247.23 216.00 246.52 C 216.96 245.80 217.92 245.09 218.88 244.47 C 219.83 243.84 220.79 243.26 221.75 242.77 C 222.71 242.27 223.67 241.85 224.62 241.50 C 225.58 241.14 226.54 240.87 227.50 240.66 C 228.46 240.45 229.42 240.32 230.38 240.23 C 231.33 240.14 232.29 240.12 233.25 240.13 C 234.21 240.13 235.17 240.19 236.12 240.26 C 237.08 240.33 238.04 240.44 239.00 240.55 C 239.96 240.65 240.92 240.78 241.88 240.89 C 242.83 241.01 243.79 241.13 244.75 241.24 C 245.71 241.35 246.67 241.46 247.62 241.55 C 248.58 241.64 249.54 241.72 250.50 241.78 C 251.46 241.85 252.42 241.90 253.38 241.94 C 254.33 241.98 255.29 242.00 256.25 242.01 C 257.21 242.02 258.17 242.00 259.12 242.00 C 260.08 242.00 261.52 242.00 262.00 242.00"/></g></svg><div class="dot" id="cap0e" style="left:26.200rem;top:24.200rem"></div>
-        <svg class="sig sig-1" data-coverage="decoration" viewBox="0 0 716.0 834.0" style="left:1.200rem;top:25.400rem;width:71.600rem;height:83.400rem" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(-12.00 -254.00)"><path class="sig-halo" d="M 620.00 282.00 L 660.00 282.00 C 682.09 282.00 700.00 299.91 700.00 322.00 L 700.00 408.00 C 700.00 432.30 680.30 452.00 656.00 452.00 L 604.00 452.00 C 579.70 452.00 560.00 471.70 560.00 496.00 L 560.00 856.00 C 560.00 880.30 540.73 895.92 516.95 890.89 L 83.05 799.11 C 59.27 794.08 40.00 809.70 40.00 834.00 L 40.00 1038.00 C 40.00 1050.15 49.85 1060.00 62.00 1060.00 L 84.00 1060.00"/><path class="sig-glow" d="M 620.00 282.00 L 660.00 282.00 C 682.09 282.00 700.00 299.91 700.00 322.00 L 700.00 408.00 C 700.00 432.30 680.30 452.00 656.00 452.00 L 604.00 452.00 C 579.70 452.00 560.00 471.70 560.00 496.00 L 560.00 856.00 C 560.00 880.30 540.73 895.92 516.95 890.89 L 83.05 799.11 C 59.27 794.08 40.00 809.70 40.00 834.00 L 40.00 1038.00 C 40.00 1050.15 49.85 1060.00 62.00 1060.00 L 84.00 1060.00"/><path class="sig-core" d="M 620.00 282.00 L 660.00 282.00 C 682.09 282.00 700.00 299.91 700.00 322.00 L 700.00 408.00 C 700.00 432.30 680.30 452.00 656.00 452.00 L 604.00 452.00 C 579.70 452.00 560.00 471.70 560.00 496.00 L 560.00 856.00 C 560.00 880.30 540.73 895.92 516.95 890.89 L 83.05 799.11 C 59.27 794.08 40.00 809.70 40.00 834.00 L 40.00 1038.00 C 40.00 1050.15 49.85 1060.00 62.00 1060.00 L 84.00 1060.00"/></g></svg><div class="dot" id="cap1s" style="left:62.000rem;top:28.200rem"></div>
+        <svg class="sig sig-0" data-coverage="decoration" viewBox="0 0 156.0 204.0" style="left:49.200rem;top:10.600rem;width:15.600rem;height:20.400rem" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(-492.00 -106.00)"><path class="sig-halo" d="M 520.00 134.00 L 520.00 270.00 C 520.00 276.63 525.37 282.00 532.00 282.00 L 620.00 282.00"/><path class="sig-glow" d="M 520.00 134.00 L 520.00 270.00 C 520.00 276.63 525.37 282.00 532.00 282.00 L 620.00 282.00"/><path class="sig-core" d="M 520.00 134.00 L 520.00 270.00 C 520.00 276.63 525.37 282.00 532.00 282.00 L 620.00 282.00"/></g></svg>
+        <svg class="sig sig-1" data-coverage="decoration" viewBox="0 0 716.0 834.0" style="left:1.200rem;top:25.400rem;width:71.600rem;height:83.400rem" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(-12.00 -254.00)"><path class="sig-halo" d="M 620.00 282.00 L 660.00 282.00 C 682.09 282.00 700.00 299.91 700.00 322.00 L 700.00 408.00 C 700.00 432.30 680.30 452.00 656.00 452.00 L 604.00 452.00 C 579.70 452.00 560.00 471.70 560.00 496.00 L 560.00 856.00 C 560.00 880.30 540.30 900.00 516.00 900.00 L 84.00 900.00 C 59.70 900.00 40.00 919.70 40.00 944.00 L 40.00 1038.00 C 40.00 1050.15 49.85 1060.00 62.00 1060.00 L 84.00 1060.00"/><path class="sig-glow" d="M 620.00 282.00 L 660.00 282.00 C 682.09 282.00 700.00 299.91 700.00 322.00 L 700.00 408.00 C 700.00 432.30 680.30 452.00 656.00 452.00 L 604.00 452.00 C 579.70 452.00 560.00 471.70 560.00 496.00 L 560.00 856.00 C 560.00 880.30 540.30 900.00 516.00 900.00 L 84.00 900.00 C 59.70 900.00 40.00 919.70 40.00 944.00 L 40.00 1038.00 C 40.00 1050.15 49.85 1060.00 62.00 1060.00 L 84.00 1060.00"/><path class="sig-core" d="M 620.00 282.00 L 660.00 282.00 C 682.09 282.00 700.00 299.91 700.00 322.00 L 700.00 408.00 C 700.00 432.30 680.30 452.00 656.00 452.00 L 604.00 452.00 C 579.70 452.00 560.00 471.70 560.00 496.00 L 560.00 856.00 C 560.00 880.30 540.30 900.00 516.00 900.00 L 84.00 900.00 C 59.70 900.00 40.00 919.70 40.00 944.00 L 40.00 1038.00 C 40.00 1050.15 49.85 1060.00 62.00 1060.00 L 84.00 1060.00"/></g></svg>
         <svg class="sig sig-2" data-coverage="decoration" viewBox="0 0 717.0 82.0" style="left:5.600rem;top:100.600rem;width:71.700rem;height:8.200rem" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(-56.00 -1006.00)"><path class="sig-halo" d="M 84.00 1060.00 L 107.00 1060.00 L 107.00 1060.00 C 124.82 1060.00 122.18 1034.00 140.00 1034.00 C 157.82 1034.00 155.18 1060.00 173.00 1060.00 L 307.00 1060.00 C 324.82 1060.00 322.18 1034.00 340.00 1034.00 C 357.82 1034.00 355.18 1060.00 373.00 1060.00 L 507.00 1060.00 C 524.82 1060.00 522.18 1034.00 540.00 1034.00 C 557.82 1034.00 555.18 1060.00 573.00 1060.00 L 745.00 1060.00"/><path class="sig-glow" d="M 84.00 1060.00 L 107.00 1060.00 L 107.00 1060.00 C 124.82 1060.00 122.18 1034.00 140.00 1034.00 C 157.82 1034.00 155.18 1060.00 173.00 1060.00 L 307.00 1060.00 C 324.82 1060.00 322.18 1034.00 340.00 1034.00 C 357.82 1034.00 355.18 1060.00 373.00 1060.00 L 507.00 1060.00 C 524.82 1060.00 522.18 1034.00 540.00 1034.00 C 557.82 1034.00 555.18 1060.00 573.00 1060.00 L 745.00 1060.00"/><path class="sig-core" d="M 84.00 1060.00 L 107.00 1060.00 L 107.00 1060.00 C 124.82 1060.00 122.18 1034.00 140.00 1034.00 C 157.82 1034.00 155.18 1060.00 173.00 1060.00 L 307.00 1060.00 C 324.82 1060.00 322.18 1034.00 340.00 1034.00 C 357.82 1034.00 355.18 1060.00 373.00 1060.00 L 507.00 1060.00 C 524.82 1060.00 522.18 1034.00 540.00 1034.00 C 557.82 1034.00 555.18 1060.00 573.00 1060.00 L 745.00 1060.00"/></g></svg><div class="dot" id="cap2e" style="left:74.500rem;top:106.000rem"></div>
       </div>
 
       <!-- ══ screen 2 · how we work · 1.97 viewports wide, the lateral travel ══ -->
       <div class="screen screen2">
         <div class="ground"></div><div class="grid"></div>
-        <div class="kick rise" style="left:2.0rem;top:6.2rem">how we work</div>
-        <div class="rule rise" style="left:2.0rem;top:8.2rem"></div>
-        <h2 class="h2 rise" style="left:2.0rem;top:9.8rem;width:44rem">from brief to operation.</h2>
-        <p class="body rise" style="left:2.0rem;top:15.2rem;width:34rem">One programme, six gates, one point of accountability.</p>
+        <div class="kick rise" style="left:4.0rem;top:6.2rem">how we work</div>
+        <div class="rule rise" style="left:4.0rem;top:8.2rem"></div>
+        <h2 class="h2 rise" style="left:4.0rem;top:9.8rem;width:44rem">from brief to operation.</h2>
+        <p class="body rise" style="left:4.0rem;top:15.2rem;width:34rem">One programme, six gates, one point of accountability.</p>
         <div class="node rise" style="left:4.0rem;top:18.0rem"></div>
-        <div class="idx big rise" style="left:2.0rem;top:20.4rem">01</div>
-        <div class="idx-rule rise" style="left:2.0rem;top:23.2rem"></div>
-        <h3 class="lbl rise" style="left:2.0rem;top:24.4rem">discover</h3>
-        <p class="cbody rise" style="left:2.0rem;top:26.2rem">Understand the space,<br>the people and the brief.</p>
+        <div class="idx big rise" style="left:4.0rem;top:20.4rem">01</div>
+        <div class="idx-rule rise" style="left:4.0rem;top:23.2rem"></div>
+        <h3 class="lbl rise" style="left:4.0rem;top:24.4rem">discover</h3>
+        <p class="cbody rise" style="left:4.0rem;top:26.2rem">Understand the space,<br>the people and the brief.</p>
         <div class="node rise" style="left:24.0rem;top:18.0rem"></div>
-        <div class="idx big rise" style="left:22.0rem;top:20.4rem">02</div>
-        <div class="idx-rule rise" style="left:22.0rem;top:23.2rem"></div>
-        <h3 class="lbl rise" style="left:22.0rem;top:24.4rem">design</h3>
-        <p class="cbody rise" style="left:22.0rem;top:26.2rem">Turn requirements into<br>spatial and system logic.</p>
+        <div class="idx big rise" style="left:24.0rem;top:20.4rem">02</div>
+        <div class="idx-rule rise" style="left:24.0rem;top:23.2rem"></div>
+        <h3 class="lbl rise" style="left:24.0rem;top:24.4rem">design</h3>
+        <p class="cbody rise" style="left:24.0rem;top:26.2rem">Turn requirements into<br>spatial and system logic.</p>
         <div class="node rise" style="left:44.0rem;top:18.0rem"></div>
-        <div class="idx big rise" style="left:42.0rem;top:20.4rem">03</div>
-        <div class="idx-rule rise" style="left:42.0rem;top:23.2rem"></div>
-        <h3 class="lbl rise" style="left:42.0rem;top:24.4rem">technical</h3>
-        <p class="cbody rise" style="left:42.0rem;top:26.2rem">Resolve the engineering<br>before work reaches site.</p>
+        <div class="idx big rise" style="left:44.0rem;top:20.4rem">03</div>
+        <div class="idx-rule rise" style="left:44.0rem;top:23.2rem"></div>
+        <h3 class="lbl rise" style="left:44.0rem;top:24.4rem">technical</h3>
+        <p class="cbody rise" style="left:44.0rem;top:26.2rem">Resolve the engineering<br>before work reaches site.</p>
         <div class="node rise" style="left:10.0rem;top:42.0rem"></div>
         <div class="idx big rise" style="left:8.0rem;top:44.4rem">06</div>
         <div class="idx-rule rise" style="left:8.0rem;top:47.2rem"></div>
@@ -417,7 +433,7 @@ var RAMP_U = 150;                            /* arc over which travel eases out 
 var WINDOWS = [null, [[355.0, 300.0], [355.0, 1018.0]], [[355.0, 920.0], [355.0, 1060.0]], [[500.0, 1060.0], [1000.0, 1060.0]], [[1000.0, 1060.0], [1160.0, 1420.0]], [[1160.0, 1560.0], [1160.0, 1960.0]]];   /* per piece, as world points */
 var WORLD  = { w:1540.0, h:2220.0 };
 var STOPS  = [{"key": "identity", "at": [355.0, 300.0]}, {"key": "who", "at": [355.0, 700.0]}, {"key": "principles", "at": [355.0, 1018.0]}, {"key": "row-1", "at": [1000.0, 1060.0]}, {"key": "row-2", "at": [1160.0, 1420.0]}, {"key": "talk", "at": [1160.0, 1960.0]}];
-var PIECES = [[-14.0, 242.0], [620.0, 282.0], [84.0, 1060.0], [745.0, 1060.0], [1301.0, 1060.0], [790.0, 1640.0]];
+var PIECES = [[520.0, 134.0], [620.0, 282.0], [84.0, 1060.0], [745.0, 1060.0], [1301.0, 1060.0], [790.0, 1640.0]];
 
 var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 var world = document.getElementById("world");
@@ -488,6 +504,12 @@ function measure(){
   }
 }
 
+/* Windows are sig-1 draw progress, not hold progress: the rows now light as the
+   line physically passes their level on the x=700 run, so nothing appears during
+   the hold. Midpoints 0.072 / 0.099 / 0.127 are the arrival moments. */
+var HERO_DIVISION_WINDOWS = [[0.064, 0.080], [0.091, 0.107], [0.119, 0.135]];
+var heroDivisionEls = Array.prototype.slice.call(document.querySelectorAll(".hero-division-reveal"));
+
 function apply(t){
   /* ── the scroll timeline ──────────────────────────────────────────────────
      Scroll is split. During the HOLD the camera does not move at all — it stays
@@ -545,6 +567,7 @@ function apply(t){
   /* piece 0 is the burst, drawn during the hold. The rest draw over their own
      authored window of camera ARC — not derived from their own geometry, which is
      why a horizontal run could never be timed before. */
+  var sig1Progress = 0;
   for (var k = 0; k < runs.length; k++) {
     var q;
     if (ARCW[k] === null) {
@@ -553,14 +576,25 @@ function apply(t){
       q = (arc - ARCW[k][0]) / (ARCW[k][1] - ARCW[k][0]);
       q = q < 0 ? 0 : (q > 1 ? 1 : q);
     }
+    if (k === 1) { sig1Progress = q; }   /* the same q that draws sig-1, reused as timing */
     for (var j = 0; j < runs[k].length; j++) {
       runs[k][j].el.style.strokeDashoffset = runs[k][j].len * (1 - q);
     }
   }
 
-  /* the cap on the burst lands as the hold completes */
-  gsap.set("#cap0e", { scale: wave > 0.985 ? 1 : 0 });
-  gsap.set("#cap1s", { scale: (!held && arc > 6) ? 1 : 0 });
+  /* The hero divisions follow sig-1 down the x=700 run — each row lights as the line
+     reaches its own level, so none of them can appear before the line starts drawing. */
+  for (var hd = 0; hd < heroDivisionEls.length; hd++) {
+    var step = parseInt(heroDivisionEls[hd].getAttribute("data-hero-division"), 10) - 1;
+    var hw = HERO_DIVISION_WINDOWS[step];
+    var hq = (sig1Progress - hw[0]) / (hw[1] - hw[0]);
+    hq = hq < 0 ? 0 : (hq > 1 ? 1 : hq);
+    hq = hq * hq * (3 - 2 * hq);
+    heroDivisionEls[hd].style.opacity = hq;
+    heroDivisionEls[hd].style.transform = "translateY(" + ((1 - hq) * 0.6).toFixed(2) + "rem)";
+  }
+
+  /* hero piece 0 now runs continuously into piece 1 at (620,282): no seam caps */
   gsap.set("#cap2e", { scale: arc >= ARCW[2][1] - 2 ? 1 : 0 });
   gsap.set("#cap5e", { scale: arc >= ARCW[5][1] - 2 ? 1 : 0 });
 
@@ -619,6 +653,7 @@ var rises = Array.prototype.slice.call(document.querySelectorAll(".rise"))
 if (reduced) {
   gsap.set(".rise", { opacity:1, y:0 });
   gsap.set(".dot", { opacity:1, scale:1 });
+  gsap.set(".hero-division-reveal", { opacity:1, y:0 });
 } else {
   gsap.registerPlugin(ScrollTrigger);
   gsap.set(".dot", { scale:0, transformOrigin:"50% 50%" });
