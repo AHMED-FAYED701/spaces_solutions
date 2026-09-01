@@ -14,7 +14,7 @@ window.SPACES_HOME = {
 
   world: {
     w: 2340,
-    h: 6220
+    h: 7520
   },
 
   scroll: {
@@ -233,6 +233,40 @@ window.SPACES_HOME = {
       y: 5020,
       w: 2340,
       h: 1200
+    },
+
+    /*
+     * CHAPTER — WHY SPACES SOLUTIONS
+     *
+     * World x 780 -> 1504, y 6000 -> 7040.
+     *
+     * The origin deliberately overlaps how-work-main (which ends at 6220)
+     * so the light ground is continuous: there is no seam at Handover.
+     */
+    whySpaces: {
+      key: "why-spaces",
+      type: "paper",
+      x: 780,
+      y: 6000,
+      w: 724,
+      h: 1040
+    },
+
+    /*
+     * CHAPTER — CONTACT
+     *
+     * World x 780 -> 1504, y 7000 -> 7520.
+     *
+     * Overlaps Why (which ends at 7040) so the light->dark field
+     * transition has both chapters underneath it.
+     */
+    contact: {
+      key: "contact",
+      type: "dark",
+      x: 780,
+      y: 7000,
+      w: 724,
+      h: 520
     }
   },
 
@@ -393,7 +427,24 @@ window.SPACES_HOME = {
       cameraEnd: { x: 960, y: 5870 },
       entryToQualificationPath: "M 1160 4840 V 5290",
       cameraPath: "M 1160 4840 V 5290 Q 1160 5305 1175 5305 H 1918 Q 1960 5305 1960 5347 V 5828 Q 1960 5870 1918 5870 H 960",
-      continuousCameraPath: "M 1160 5290 Q 1160 5305 1175 5305 H 1918 Q 1960 5305 1960 5347 V 5828 Q 1960 5870 1918 5870 H 960",
+      /*
+       * ONE continuous camera route.
+       *
+       * Qualification (1160,5290) -> Handover (960,5870) preserves the
+       * approved How route. After Handover the camera continues straight
+       * down at x=960; the downstream signal travels left to meet that axis.
+       *
+       * Authored total ~3682.699u. Runtime truth: getTotalLength().
+       */
+      continuousCameraPath:
+        "M 1160 5290 " +
+        "Q 1160 5305 1175 5305 " +
+        "H 1918 " +
+        "Q 1960 5305 1960 5347 " +
+        "V 5828 " +
+        "Q 1960 5870 1918 5870 " +
+        "H 960 " +
+        "V 7210",
       cameraStops: [
         { key: "entry", x: 1160, y: 4840 },
         { key: "qualification", x: 1160, y: 5290 },
@@ -440,7 +491,74 @@ window.SPACES_HOME = {
           { progress: 1.00, fraction: 1.000000000 }
         ]
       },
-      continuation: { x: 1142, y: 5960 }
+      continuation: { x: 1142, y: 5960 },
+
+      /*
+       * DOWNSTREAM — WHY + CONTACT
+       *
+       * Continuous reference anchors, NOT snap stops. Their cumulative
+       * camera distances are derived mechanically at runtime from the live
+       * continuousCameraPath; the values in the comment are the authored
+       * expectations used for validation only.
+       *
+       * handover   2342.699   whyIntro 2607.699   reason01 2758.699
+       * reason02   2918.699   reason03 3078.699   reason04 3238.699
+       * whyExit    3412.699   contact 3682.699
+       */
+      downstream: {
+        cameraAnchors: [
+          { key: "handover", x: 960, y: 5870 },
+          { key: "whyIntro", x: 960, y: 6135 },
+          { key: "reason01", x: 960, y: 6286 },
+          { key: "reason02", x: 960, y: 6446 },
+          { key: "reason03", x: 960, y: 6606 },
+          { key: "reason04", x: 960, y: 6766 },
+          { key: "whyExit", x: 960, y: 6940 },
+          { key: "contact", x: 960, y: 7210 }
+        ],
+
+        /*
+         * Why/Contact signal — ONE piece, starting exactly at the existing
+         * How endpoint (1142,5960) so the seam departure is 0u.
+         *
+         * Cardinal runs only, rounded corners, no diagonal, no wave.
+         * Authored length ~1910.787u including the 182u seam-to-axis run.
+         */
+        signal: {
+          key: "why-signal-continuous",
+          d:
+            "M 1142 5960 " +
+            "H 960 " +
+            "V 6198 Q 960 6210 948 6210 " +
+            "H 915 Q 903 6210 903 6222 " +
+            "V 6358 Q 903 6370 915 6370 " +
+            "H 1001 Q 1013 6370 1013 6382 " +
+            "V 6518 Q 1013 6530 1025 6530 " +
+            "H 1031 Q 1043 6530 1043 6542 " +
+            "V 6678 Q 1043 6690 1031 6690 " +
+            "H 915 Q 903 6690 903 6702 " +
+            "V 6838 Q 903 6850 915 6850 " +
+            "H 948 Q 960 6850 960 6862 " +
+            "V 7340",
+          start: { x: 1142, y: 5960 },
+          end: { x: 960, y: 7340 },
+
+          /*
+           * Piecewise-linear reveal fraction per camera anchor above.
+           * The signal is 0 at Handover and reveals immediately afterward.
+           */
+          fractions: [
+            0.0000000000,
+            0.2198047159,
+            0.3139844455,
+            0.4505550847,
+            0.5452581589,
+            0.6975291348,
+            0.7498412995,
+            1.0000000000
+          ]
+        }
+      }
     }
   },
 
@@ -879,12 +997,18 @@ window.SPACES_HOME = {
       y1: 962
     },
     {
+      /*
+       * The light header persists from How through Why and into the
+       * Why->Contact transition. y1 is the camera y at local Reason04->
+       * Contact progress s=0.56 (6766 + 0.56 * 444), the ordered dark
+       * header switch point. Reversing crosses the same line.
+       */
       chapter: "how-work-main",
       className: "on-paper",
       x0: 0,
       y0: 5091,
       x1: 2340,
-      y1: 6280
+      y1: 7014.64
     }
   ]
 };

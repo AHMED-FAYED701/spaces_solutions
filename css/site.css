@@ -32,7 +32,7 @@ body.route-active .site-header{opacity:0;pointer-events:none}
 body.route-active .site-nav{opacity:0;visibility:hidden;pointer-events:none}
 
 #viewport{position:relative;width:100vw;height:100vh;overflow:hidden}
-#world{position:absolute;left:0;top:0;width:234rem;height:622rem;will-change:transform}
+#world{position:absolute;left:0;top:0;width:234rem;height:752rem;will-change:transform}
 .chapter{position:absolute;overflow:hidden}
 .chapter>*{position:absolute}
 .chapter-hero{left:0;top:0;width:74rem;height:45rem}
@@ -72,7 +72,7 @@ body.loading .hero-cue{opacity:0}
 .about-view1-body p{position:static}
 .about-overview{z-index:3;left:35rem;top:18.2rem;width:38rem;height:auto;object-fit:contain}
 
-.world-signal{position:absolute;z-index:2;left:0;top:-15rem;width:234rem;height:637rem;overflow:visible;pointer-events:none}
+.world-signal{position:absolute;z-index:2;left:0;top:-15rem;width:234rem;height:767rem;overflow:visible;pointer-events:none}
 .world-signal path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .sig-halo{stroke:var(--violet);stroke-width:22;opacity:.2}
 .sig-halo{display:none}
@@ -91,7 +91,7 @@ body.loading .hero-cue{opacity:0}
 body.on-paper .site-menu-button{color:var(--plum2)}
 #viewport{height:auto;overflow:visible;padding-top:58px}
 #world{position:relative;width:100%;height:auto!important;transform:none!important;will-change:auto;display:flex;flex-direction:column}
-.chapter-divisions{order:10}.division-screen-av{order:11}.av-services{order:12}.division-screen-it{order:13}.it-services{order:14}.division-screen-dc{order:15}.dc-services{order:16}.how-entry{order:20}.how-work{order:21}
+.chapter-divisions{order:10}.division-screen-av{order:11}.av-services{order:12}.division-screen-it{order:13}.it-services{order:14}.division-screen-dc{order:15}.dc-services{order:16}.how-entry{order:20}.how-work{order:21}.why-spaces{order:22}.chapter-contact{order:23}
 .chapter{position:relative;left:auto;top:auto;width:100%;height:auto;overflow:hidden}
 .chapter>*{position:relative}
 .chapter-hero{min-height:calc(100svh - 58px);padding:74px 24px 68px}
@@ -287,8 +287,8 @@ body.route-it .it-back-fixed{display:block}
 .av-detail-copy h3{margin-top:1.6rem;color:#fff;font-size:1.6rem;line-height:1.05;font-weight:600;letter-spacing:-.025em}
 .av-detail-copy span{display:block;margin-top:2rem;padding-top:1.4rem;border-top:1px solid rgba(176,131,174,.20);color:var(--soft);font-size:.7rem;line-height:1.55}
 .av-service-signal{pointer-events:none}
-.av-back-fixed{position:fixed;z-index:80;right:2.2rem;top:5.2rem;display:none;padding:0 0 .55rem;border:0;border-bottom:1px solid rgba(176,131,174,.45);background:none;color:var(--soft);font:400 .48rem 'DM Mono',monospace;letter-spacing:.16em;cursor:pointer}
-body.route-av .av-back-fixed{display:block}
+.av-back-fixed{position:fixed;z-index:80;right:2.2rem;top:5.2rem;display:none;pointer-events:none;padding:0 0 .55rem;border:0;border-bottom:1px solid rgba(176,131,174,.45);background:none;color:var(--soft);font:400 .48rem 'DM Mono',monospace;letter-spacing:.16em;cursor:pointer}
+body.route-av.at-av-intro .av-back-fixed{display:block;pointer-events:auto}
 
 /* Locked solutions hub and division service-tower geometry. */
 /* Intro — one centred editorial composition. World x 980→1300.
@@ -364,10 +364,109 @@ body.route-how-transition .site-header{opacity:1;pointer-events:auto}
 body.route-how-work .site-header{opacity:1;pointer-events:auto}
 .how-continuation-signal,.how-entry-trunk-signal{opacity:0}
 body.route-how-entry.how-source-dc [data-how-entry-signal="dc-to-how"],body.route-how-work.how-source-dc [data-how-entry-signal="dc-to-how"],body.route-how-entry.how-source-it [data-how-entry-signal="it-to-how"],body.route-how-work.how-source-it [data-how-entry-signal="it-to-how"],body.route-how-entry.how-source-av [data-how-entry-signal="av-to-how"],body.route-how-work.how-source-av [data-how-entry-signal="av-to-how"],body.route-how-entry .how-entry-trunk-signal,body.route-how-work .how-entry-trunk-signal{opacity:1}
-.how-back-fixed{position:fixed;z-index:80;right:2.2rem;top:5.2rem;display:none;padding:0 0 .55rem;border:0;border-bottom:1px solid rgba(176,131,174,.45);background:none;color:var(--soft);font:400 .48rem 'DM Mono',monospace;letter-spacing:.16em;cursor:pointer}
-body.route-how-entry .how-back-fixed{display:block}
-body.route-how-work .how-back-fixed{display:block}
-body.route-how-work.on-paper .how-back-fixed{color:var(--plum2);border-bottom-color:rgba(47,22,80,.35)}
+
+
+/* ── WHY SPACES SOLUTIONS — world x 598→1322, y 6000→7040 ──────────────────
+   The chapter origin overlaps how-work-main (which ends at 6220) so the light
+   ground runs unbroken through Handover. There is no seam and no colour change
+   at Handover: Why is the same #eae3eb environment as How. */
+.why-spaces{left:59.8rem;top:600rem;width:72.4rem;height:104rem;color:var(--plum2);opacity:0;pointer-events:none}
+body.route-how-work .why-spaces{opacity:1;pointer-events:auto}
+
+/* Intro. Kicker 623,6052 w260 · headline 623,6078 w280 · support 1028,6090 w260.
+   Headline right edge 903 and support left edge 1028 both clear the signal
+   axis x=960 (57u / 68u). */
+.why-kicker{z-index:4;left:2.5rem;top:5.2rem;width:26rem;color:var(--violet);font:400 .5rem 'DM Mono',monospace;letter-spacing:.22em}
+.why-headline{z-index:4;left:2.5rem;top:7.8rem;width:28rem;font-size:1.62rem;line-height:1.2;letter-spacing:-.028em;font-weight:600}
+.why-support{z-index:4;left:43rem;top:9rem;width:26rem;color:#5b5560;font-size:.72rem;line-height:1.62}
+
+/* Reason boxes — restrained architectural boxes, not cards.
+   01 623,6230 250×112 · 02 1043,6390 250×112 · 03 1073,6550 220×112 ·
+   04 623,6710 250×112. Each keeps a 30u corridor clear of the signal. */
+.why-reason{z-index:4;padding:1.3rem 1.4rem;border:1px solid rgba(90,45,138,.22);border-radius:.5rem;background:rgba(255,255,255,.34)}
+.why-reason-01{left:2.5rem;top:23rem;width:25rem;height:11.2rem}
+.why-reason-02{left:44.5rem;top:39rem;width:25rem;height:11.2rem}
+.why-reason-03{left:47.5rem;top:55rem;width:22rem;height:11.2rem}
+.why-reason-04{left:2.5rem;top:71rem;width:25rem;height:11.2rem}
+.why-reason p{color:var(--violet);font:400 .44rem 'DM Mono',monospace;letter-spacing:.2em}
+.why-reason h3{margin-top:.9rem;color:#2f1650;font-size:.8rem;line-height:1.3;font-weight:500;letter-spacing:-.012em;text-transform:uppercase}
+.why-reason span{display:block;margin-top:.85rem;color:#5b5560;font-size:.6rem;line-height:1.62}
+
+/* Supporting coordination silhouette — world 610,6415 w260. Its right edge
+   is x=870, leaving the authored 33u clear of the first signal lane at x=903. */
+.why-coordination{z-index:1;left:1.2rem;top:41.5rem;width:26rem;height:auto;object-fit:contain;pointer-events:none;opacity:.35}
+
+/* Why/Contact signal — glow + core only, no halo.
+   Light ground: core #2f1650, glow #b083ae. Widths match the How signal.
+   The runtime re-colours both inline across the Why→Contact transition. */
+.why-signal .sig-glow{stroke:#b083ae;stroke-width:9;opacity:.3}
+.why-signal .sig-core{stroke:#2f1650;stroke-width:2.8}
+
+/* ── WHY → CONTACT light/dark field ────────────────────────────────────────
+   Overlapping full-field world-space grounds crossfaded by local camera
+   progress. No seam, no gradient strip, no wave, no diagonal.
+
+   The authored crossfade band is y 6800→7360. At every validated viewport
+   aspect that band's TOP EDGE sits inside the frame while the dark field is
+   already partly opaque, which renders as a hard horizontal seam, so the
+   plate spans the whole Why+Contact column (6220→7520) instead and is
+   genuinely full-field in every frame. The authored crossfade timing is
+   unchanged. It starts exactly where how-work-main ends (6220), so the light
+   ground and the 4rem grid tiling continue without overlap or phase shift. */
+.why-contact-transition{position:absolute;z-index:0;left:0;top:622rem;width:234rem;height:130rem;pointer-events:none;opacity:0}
+body.route-how-work .why-contact-transition{opacity:1}
+.why-contact-light,.why-contact-grid,.why-contact-dark{position:absolute;inset:0}
+.why-contact-light{background:#eae3eb}
+.why-contact-grid{background-image:linear-gradient(rgba(47,22,80,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(47,22,80,.045) 1px,transparent 1px);background-size:4rem 4rem;mask-image:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 18%,rgba(0,0,0,.72) 82%,transparent)}
+.why-contact-dark{background:linear-gradient(178deg,#110620,#0b0413);opacity:0}
+
+/* ── CONTACT — world x 598→1322, y 7000→7520 ───────────────────────────────
+   Dark ground, texture, panel and form vocabulary reused from the current
+   About contact section (screen 3). Only the layout is compacted to the
+   authored 270×214u panel. */
+.chapter-contact{left:59.8rem;top:700rem;width:72.4rem;height:52rem;color:#fff;opacity:0;pointer-events:none}
+body.route-how-work .chapter-contact{opacity:1;pointer-events:auto}
+/* Decor spans the whole dark field (y 6800→7520), not just the Contact
+   chapter, so the texture never presents a horizontal edge inside the frame
+   while it fades in. Same About vocabulary, adapted extent only. */
+.contact-decor{position:absolute;z-index:2;left:59.8rem;top:680rem;width:72.4rem;height:72rem;pointer-events:none;opacity:0}
+.contact-crosses{position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(176,131,174,.34) 1px,transparent 1px),linear-gradient(90deg,rgba(176,131,174,.34) 1px,transparent 1px);background-size:.44rem .05rem,.05rem .44rem;background-position:2rem 3rem,2rem 3rem;mask-image:linear-gradient(75deg,#000 22%,transparent 46%)}
+.contact-rings{position:absolute;left:30rem;top:26rem;width:24rem;height:24rem;overflow:visible}
+
+/* Left content cluster — world 623,7128 w280. Right edge 903 clears the
+   signal axis x=960 by 57u. */
+.contact-cluster{z-index:4;left:2.5rem;top:12.8rem;width:28rem;opacity:0}
+.contact-kick{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mauve)}
+.contact-rule{height:.09rem;width:4.4rem;margin-top:1.4rem;background:linear-gradient(90deg,var(--signal),rgba(201,164,255,0))}
+.contact-h2{margin-top:1.4rem;font-weight:600;font-size:2.35rem;line-height:1.06;letter-spacing:-.035em}
+.contact-h2 em{font-style:normal;color:var(--mauve)}
+.contact-body{margin-top:1.5rem;width:25rem;font-weight:300;font-size:.8rem;line-height:1.62;color:var(--soft);opacity:.9}
+.contact-assurance{display:flex;margin-top:2.1rem}
+.contact-assure{display:flex;align-items:center;gap:.6rem;padding-right:1.2rem}
+.contact-assure+.contact-assure{padding-left:1.2rem;border-left:1px solid rgba(216,196,215,.2)}
+.contact-assure .a-icon{flex:0 0 auto;width:1.6rem;height:1.6rem;color:var(--mauve);opacity:.85}
+.contact-assure .a-text{font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7;color:var(--soft);opacity:.85}
+
+/* Form panel — world 1018,7118 270×214. Left edge 1018 clears the signal
+   axis x=960 by 58u. Every About field, option, button and note is kept;
+   only the row rhythm is compacted into the authored height. */
+.contact-panel{z-index:3;left:42rem;top:11.8rem;width:27rem;height:21.4rem;padding:1.6rem 1.8rem;border:1px solid rgba(201,164,255,.28);border-radius:1.1rem;background:linear-gradient(150deg,rgba(47,22,80,.34),rgba(11,4,19,.5));opacity:0}
+.contact-panel .f-label{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.3em;text-transform:uppercase;color:var(--soft)}
+.contact-panel .contact{display:grid;grid-template-columns:1fr 1fr;gap:.7rem .9rem;margin-top:1.2rem}
+.contact-panel .fld{display:block;position:relative}
+.contact-panel .fld-wide{grid-column:1 / -1}
+.contact-panel .fld input,.contact-panel .fld select,.contact-panel .fld textarea{width:100%;height:2.2rem;padding:0 .8rem;border:1px solid rgba(216,196,215,.24);border-radius:.4rem;background:rgba(11,4,19,.5);font-family:'Alexandria',sans-serif;font-weight:300;font-size:.6rem;color:#fff;outline:none;transition:border-color .2s,background .2s}
+.contact-panel .fld-area textarea{height:3.8rem;padding:.6rem .8rem;resize:none;line-height:1.55}
+.contact-panel .fld select{appearance:none;color:var(--soft);cursor:pointer}
+.contact-panel .fld.sel::after{content:'';position:absolute;right:.8rem;top:.9rem;width:.34rem;height:.34rem;border-right:1.5px solid var(--mauve);border-bottom:1.5px solid var(--mauve);transform:rotate(45deg);pointer-events:none}
+.contact-panel .fld ::placeholder{color:var(--soft);opacity:.55}
+.contact-panel .fld input:focus,.contact-panel .fld textarea:focus,.contact-panel .fld select:focus{border-color:var(--mauve);background:rgba(47,22,80,.3)}
+.contact-panel .send{grid-column:1 / -1;height:2.3rem;display:flex;align-items:center;justify-content:center;gap:.8rem;border:1px solid rgba(201,164,255,.4);border-radius:.4rem;background:linear-gradient(100deg,rgba(90,45,138,.7),rgba(47,22,80,.7));font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:#fff;cursor:pointer;transition:background .25s,border-color .25s}
+.contact-panel .send:hover{background:linear-gradient(100deg,rgba(122,64,184,.85),rgba(90,45,138,.8))}
+.contact-panel .send svg{width:.9rem;height:.9rem}
+.contact-panel .note{display:flex;align-items:center;gap:.45rem;margin-top:.7rem;font-size:.54rem;color:var(--soft);opacity:.7}
+.contact-panel .note svg{width:.66rem;height:.66rem}
+
 
 @media(max-width:820px){#world{width:100%;height:auto}
 .chapter-principles,.chapter-divisions,.division-screen{left:auto;top:auto;width:100%;height:auto}
@@ -451,7 +550,42 @@ body.route-how-work.on-paper .how-back-fixed{color:var(--plum2);border-bottom-co
 .how-stage p,.how-stage h3,.how-stage span{position:relative;left:auto;top:auto}.how-stage p{font-size:9px}.how-stage h3{margin-top:20px;font-size:20px;line-height:1.45}.how-stage span{margin-top:24px;padding-top:14px;font-size:10px}.how-stage span b{font-size:8px}
 .readiness-gate{position:relative;left:auto;top:auto;height:44px;margin-top:-20px}
 .readiness-gate i{display:none}.readiness-gate span{position:relative;left:auto;top:auto;display:block;width:auto;padding-top:16px;border-top:1px solid rgba(47,22,80,.22);font-size:9px}
-.how-back-fixed{display:none!important}
+/* WHY — stacked light section, reasons 01→04 in order. */
+.why-contact-transition{display:none}
+.why-spaces{display:block;left:auto;top:auto;width:100%;height:auto;padding:82px 24px 76px;background:#eae3eb;color:var(--plum2);opacity:1;pointer-events:auto}
+.why-kicker,.why-headline,.why-support{position:relative;left:auto;top:auto;width:auto}
+.why-kicker{font-size:9px;letter-spacing:.2em}
+.why-headline{margin-top:24px;font-size:30px;line-height:1.14}
+.why-support{margin-top:26px;font-size:15px;line-height:1.6}
+.why-reason,.why-reason-01,.why-reason-02,.why-reason-03,.why-reason-04{position:relative;left:auto;top:auto;width:auto;height:auto;margin-top:26px;padding:20px 18px;opacity:1!important}
+.why-coordination{position:relative;left:auto;top:auto;display:block;width:86%;max-width:420px;height:auto;margin:26px auto 0;opacity:1!important}
+.why-reason p{font-size:9px}
+.why-reason h3{margin-top:14px;font-size:16px;line-height:1.35}
+.why-reason span{margin-top:14px;font-size:13px;line-height:1.6}
+/* CONTACT — About mobile contact treatment: no panel chrome, stacked fields. */
+.chapter-contact{display:block;left:auto;top:auto;width:100%;height:auto;padding:82px 24px 76px;background:linear-gradient(178deg,#110620,#0b0413);color:#fff;opacity:1;pointer-events:auto}
+.contact-decor{display:none}
+.contact-cluster,.contact-panel{position:relative;left:auto;top:auto;width:auto;height:auto;opacity:1!important}
+.contact-panel{margin-top:44px;padding:0;border:0;border-radius:0;background:none}
+.contact-kick{font-size:10px;letter-spacing:.26em}
+.contact-rule{width:56px;margin-top:14px}
+.contact-h2{margin-top:18px;font-size:30px;line-height:1.08}
+.contact-body{width:auto;margin-top:22px;font-size:15px;line-height:1.6}
+.contact-assurance{flex-direction:column;margin-top:30px}
+.contact-assure{padding:14px 0}
+.contact-assure+.contact-assure{padding-left:0;border-left:0;border-top:1px solid rgba(216,196,215,.16)}
+.contact-assure .a-icon{width:22px;height:22px}
+.contact-assure .a-text{font-size:10px}
+.contact-panel .f-label{font-size:10px;letter-spacing:.24em}
+.contact-panel .contact{display:block;margin-top:20px}
+.contact-panel .fld{margin-bottom:12px}
+.contact-panel .fld input,.contact-panel .fld select{height:46px;padding:0 14px;font-size:14px}
+.contact-panel .fld-area textarea{height:110px;padding:12px 14px;font-size:14px}
+.contact-panel .fld.sel::after{right:16px;top:19px;width:7px;height:7px}
+.contact-panel .send{width:100%;height:48px;margin-top:6px;font-size:11px}
+.contact-panel .send svg{width:16px;height:16px}
+.contact-panel .note{margin-top:16px;font-size:11px}
+.contact-panel .note svg{width:13px;height:13px}
 }
 
 @media (min-width:821px) {

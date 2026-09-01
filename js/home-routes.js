@@ -93,6 +93,29 @@
   var continuousAnchorDistances = [0,299.348,759.348,1238.524,1842.699,2342.699];
   var continuousSignalFractions = [0.059730002,0.196568864,0.399119984,0.600881674,0.862369111,1];
 
+  /*
+   * DOWNSTREAM — WHY + CONTACT.
+   *
+   * Same continuous controller, same camera path, same gain. These are
+   * cumulative distances along continuousJourneyPath, measured from the live
+   * path at bind time (never hard-coded), in the order authored in home.js:
+   *
+   * handover, whyIntro, reason01..04, whyExit, contact.
+   */
+  var downstreamAnchors = [];
+  var downstreamFractions = [];
+  var whyRuns = [];
+  var whySignalLength = 0;
+  var whyIntroElements = [];
+  var whyReasonElements = [];
+  var whyCoordinationElement = null;
+  var whyGridElement = null;
+  var whyFieldLightElement = null;
+  var whyFieldDarkElement = null;
+  var contactClusterElement = null;
+  var contactPanelElement = null;
+  var contactDecorElement = null;
+
   function desktopAllowed() {
     return (
       window.innerWidth > 820 &&
@@ -306,6 +329,24 @@
    */
   function avIntroStop() {
     return (avJourney && avJourney.introStop) || avJourney.cameraStart;
+  }
+
+  /*
+   * The AV back control is a RESTING-STATE affordance for the AV intro only.
+   *
+   * Visibility is derived from actual route state — the active route, the
+   * settled/returning flags and the AV target stop — never from the viewport.
+   * The AV wheel clamp floors avTargetY at introStop, so any forward input
+   * toward the AV service overview lifts it off the intro and hides the
+   * control; reversing back down to the intro restores it.
+   */
+  function updateAvIntroVisibility() {
+    var atIntro = !!avJourney &&
+      activeRoute === "av" &&
+      avInputEnabled &&
+      !avReturning &&
+      avTargetY <= avIntroStop().y + 0.5;
+    document.body.classList.toggle("at-av-intro", atIntro);
   }
 
   function avProgress() {
@@ -736,6 +777,9 @@
     howJourneyPath = createSampledPath(howJourney.cameraPath);
     continuousJourneyPath = createSampledPath(howJourney.continuousCameraPath);
     continuousJourneyLength = continuousJourneyPath.length;
+    continuousAnchorDistances = howJourney.cameraStops.slice(1).map(function (anchor) {
+      return distanceAtPoint(continuousJourneyPath, anchor);
+    });
     howStagePaths = howJourney.stageTransitions.map(function (transition) {
       return createSampledPath(transition.path);
     });
@@ -759,6 +803,184 @@
       : 0;
     renderHowJourney(0);
     journeyTargetDistance = journeyVisualDistance = 0;
+    bindWhyContact();
+  }
+
+  /*
+   * Bind the Why/Contact downstream data.
+   *
+   * The authored anchor distances are validation values only; the live
+   * distances below are derived mechanically from the extended camera path.
+   */
+  function bindWhyContact() {
+    var downstream = howJourney && howJourney.downstream;
+    if (!downstream || !continuousJourneyPath) return;
+
+    downstreamAnchors = downstream.cameraAnchors.map(function (anchor) {
+      return distanceAtPoint(continuousJourneyPath, anchor);
+    });
+    downstreamFractions = downstream.signal.fractions.slice();
+
+    whyRuns = Array.prototype.slice.call(
+      document.querySelectorAll(
+        '[data-why-signal="' + downstream.signal.key + '"] path'
+      )
+    ).map(function (path) {
+      var length = path.getTotalLength();
+      path.style.strokeDasharray = String(length);
+      path.style.strokeDashoffset = String(length);
+      return { element: path, length: length };
+    });
+    whySignalLength = whyRuns.length ? whyRuns[0].length : 0;
+
+    whyIntroElements = Array.prototype.slice.call(
+      document.querySelectorAll(".why-kicker,.why-headline,.why-support")
+    );
+    whyReasonElements = Array.prototype.slice.call(
+      document.querySelectorAll(".why-reason")
+    );
+    whyCoordinationElement = document.querySelector(".why-coordination");
+    whyGridElement = document.querySelector(".why-contact-grid");
+    whyFieldLightElement = document.querySelector(".why-contact-light");
+    whyFieldDarkElement = document.querySelector(".why-contact-dark");
+    contactClusterElement = document.querySelector(".contact-cluster");
+    contactPanelElement = document.querySelector(".contact-panel");
+    contactDecorElement = document.querySelector(".contact-decor");
+
+    renderDownstream(0);
+  }
+
+  function setWhySignalFraction(fraction) {
+    var revealDistance = whySignalLength * clamp(fraction, 0, 1);
+    whyRuns.forEach(function (run) {
+      run.element.style.strokeDashoffset = String(run.length - revealDistance);
+    });
+  }
+
+  /*
+   * Why -> Contact signal colour.
+   *
+   * Light ground  core #2f1650 / glow #b083ae
+   * Dark contact  core #f3e9ff / glow #c9a4ff
+   *
+   * Applied to the whole visible Why/Contact run including the existing How
+   * endpoint at (1142,5960), so the line never changes hue at the seam.
+   */
+  function applyWhySignalColor(progress) {
+    var t = clamp(progress, 0, 1);
+    var core = "rgb(" + [
+      mixChannel(47, 243, t),
+      mixChannel(22, 233, t),
+      mixChannel(80, 255, t)
+    ].join(",") + ")";
+    var glow = "rgb(" + [
+      mixChannel(176, 201, t),
+      mixChannel(131, 164, t),
+      mixChannel(174, 255, t)
+    ].join(",") + ")";
+    howContinuousRuns.concat(whyRuns).forEach(function (run) {
+      if (run.element.classList.contains("sig-core")) run.element.style.stroke = core;
+      else if (run.element.classList.contains("sig-glow")) run.element.style.stroke = glow;
+    });
+  }
+
+  function span(distance, from, to) {
+    if (to <= from) return distance >= to ? 1 : 0;
+    return clamp((distance - from) / (to - from), 0, 1);
+  }
+
+  function setOpacity(element, value) {
+    if (element) element.style.opacity = String(value);
+  }
+
+  /*
+   * Continuous Why/Contact emphasis.
+   *
+   * Everything here is a function of the VISUAL camera distance. Nothing
+   * snaps, nothing is threshold-activated, and the user may stop anywhere.
+   */
+  function renderDownstream(distance) {
+    if (!downstreamAnchors.length) return;
+
+    var handover = downstreamAnchors[0];
+    var intro = downstreamAnchors[1];
+    var reason04 = downstreamAnchors[5];
+    var contact = downstreamAnchors[7];
+
+    /* Signal is 0 at Handover, then reveals left to x=960 before descending. */
+    setWhySignalFraction(
+      piecewise(
+        clamp(distance, handover, contact),
+        downstreamAnchors,
+        downstreamFractions
+      )
+    );
+
+    /*
+     * Handover -> Why Intro crossfade.
+     *
+     * Guarded at the Handover anchor so the upstream How stage crossfade
+     * still owns Handover emphasis on the approved part of the journey.
+     */
+    var enter = span(distance, handover, intro);
+    var eased = smooth(enter);
+    if (distance > handover) {
+      setOpacity(howStageElements[5], 1 - 0.86 * eased);
+    }
+
+    /* Local Reason 04 -> Contact progress. */
+    var s = span(distance, reason04, contact);
+
+    /* Reason emphasis: intro at 1, then one active box at a time. */
+    var introToOne = span(distance, intro, downstreamAnchors[2]);
+    var late = fadeWindow(s, 0.38, 0.78);
+    var introOpacity = eased * (1 - 0.82 * smooth(introToOne));
+    whyIntroElements.forEach(function (element) {
+      setOpacity(element, introOpacity - (introOpacity - 0.06) * late);
+    });
+
+    whyReasonElements.forEach(function (element, index) {
+      var value;
+      if (index === 3) {
+        /* Reason 04 keeps its own authored fade into Contact. */
+        value = 0.14 + 0.86 * smooth(span(distance, downstreamAnchors[4], reason04));
+        value = value - (value - 0.14) * fadeWindow(s, 0.10, 0.56);
+      } else {
+        var rise = smooth(span(distance, downstreamAnchors[index + 1], downstreamAnchors[index + 2]));
+        var fall = smooth(span(distance, downstreamAnchors[index + 2], downstreamAnchors[index + 3]));
+        value = 0.14 + 0.86 * (rise - fall);
+      }
+      value = value * eased;
+      setOpacity(element, value - (value - 0.06) * late);
+    });
+
+    /* Environmental image emphasis follows the same visual-camera distance. */
+    setOpacity(whyCoordinationElement, smoothPiecewise(
+      clamp(distance, intro, downstreamAnchors[6]),
+      downstreamAnchors.slice(1, 7),
+      [0.35, 0.55, 1, 1, 0.55, 0.20]
+    ));
+
+    /* Light -> dark field. Smoothstep, no seam, no strip. */
+    setOpacity(whyFieldLightElement, 1 - fadeWindow(s, 0.08, 0.72));
+    setOpacity(whyFieldDarkElement, fadeWindow(s, 0.10, 0.74));
+
+    /* Why grid out, About-style contact texture in. */
+    setOpacity(whyGridElement, 1 - fadeWindow(s, 0.18, 0.62));
+    setOpacity(contactDecorElement, fadeWindow(s, 0.28, 0.76));
+
+    /* Contact content. */
+    var contactIn = fadeWindow(s, 0.38, 0.78);
+    setOpacity(contactClusterElement, contactIn);
+    setOpacity(contactPanelElement, contactIn);
+
+    /* The line becomes luminous before the dark field dominates. */
+    applyWhySignalColor(fadeWindow(s, 0.10, 0.30));
+  }
+
+  function smooth(t) {
+    var v = clamp(t, 0, 1);
+    return v * v * (3 - 2 * v);
   }
 
   function tweenRuns(runs, reveal, duration, onComplete) {
@@ -818,6 +1040,7 @@
       });
     }
     activeRoute = "howEntry";
+    updateAvIntroVisibility();
     document.body.classList.remove("route-data-center", "route-it", "route-av");
     document.body.classList.add(
       "route-how-entry",
@@ -829,8 +1052,6 @@
     function finishArrival() {
       if (!cameraDone || !signalDone) return;
       howInputEnabled = true;
-      var back = document.querySelector("[data-how-back-fixed]");
-      if (back) back.focus({ preventScroll: true });
     }
 
     tweenRuns(howSignalRuns[source], true, definition.revealDuration, function () {
@@ -864,6 +1085,7 @@
       renderAvSignals(1);
       avInputEnabled = true;
     }
+    updateAvIntroVisibility();
     howReturning = false;
     if (howBackToHub) {
       howBackToHub = false;
@@ -968,6 +1190,7 @@
         howWorkReturning = false;
         journeyTargetDistance = 0;
         journeyVisualDistance = 0;
+        renderDownstream(0);
         activeRoute = "howWork";
         if (touchY !== null) howTouchAwaitingRelease = true;
         armHowWheelAfterRelease();
@@ -1047,6 +1270,9 @@
     howRenderState.distance = 0;
     renderHowJourney(0);
     applyHowSignalColor(0);
+    journeyTargetDistance = 0;
+    journeyVisualDistance = 0;
+    renderDownstream(0);
     howWorkInputEnabled = false;
     howWorkReturning = false;
     howEntryWheelAccum = 0;
@@ -1075,6 +1301,15 @@
   function piecewise(distance, anchors, values) {
     for (var i = 1; i < anchors.length; i += 1) if (distance <= anchors[i]) { var q = (distance - anchors[i-1]) / (anchors[i]-anchors[i-1]); return values[i-1] + (values[i]-values[i-1]) * q; }
     return values[values.length-1];
+  }
+  function smoothPiecewise(distance, anchors, values) {
+    for (var i = 1; i < anchors.length; i += 1) {
+      if (distance <= anchors[i]) {
+        var q = smooth((distance - anchors[i - 1]) / (anchors[i] - anchors[i - 1]));
+        return values[i - 1] + (values[i] - values[i - 1]) * q;
+      }
+    }
+    return values[values.length - 1];
   }
   function renderContinuousJourney() {
     var runtime = window.SPACES_RUNTIME;
@@ -1117,57 +1352,8 @@
     if (gate && howStageElements[2]) {
       gate.style.opacity = howStageElements[2].style.opacity;
     }
-  }
 
-  function rewindHowJourneyToEntry(onComplete) {
-    var runtime = window.SPACES_RUNTIME;
-    killHowRenderTween();
-    howTargetDistance = howRenderedDistance;
-    howRenderState.distance = howRenderedDistance;
-    var state = { distance: howRenderedDistance };
-    var duration = 0.55 + howProgress * 0.75;
-    var span = howRenderedDistance;
-    howWorkInputEnabled = false;
-    howWorkReturning = true;
-    document.body.classList.add("route-how-transition");
-    applyHowTransitionOpacity(0, 0, 1, 1, 1);
-    window.gsap.to(state, {
-      distance: 0,
-      duration: duration,
-      ease: "power3.inOut",
-      onUpdate: function () {
-        howTargetDistance = state.distance;
-        howRenderedDistance = state.distance;
-        howRenderState.distance = state.distance;
-        renderHowJourney(howRenderedDistance / howPathLength);
-        runtime.moveCameraTo(
-          howJourneyPath.element.getPointAtLength(howRenderedDistance),
-          0,
-          "none"
-        );
-        var t = span > 0 ? clamp(1 - state.distance / span, 0, 1) : 1;
-        var leaving = 1 - fadeWindow(t, 0.10, 0.46);
-        applyHowTransitionOpacity(
-          fadeWindow(t, 0.30, 0.72),
-          fadeWindow(t, 0.30, 0.72),
-          leaving,
-          leaving,
-          leaving
-        );
-      },
-      onComplete: function () {
-        restoreHowEntry();
-        if (onComplete) onComplete();
-      }
-    });
-  }
-
-  function handleHowBack() {
-    if (activeRoute === "howWork") {
-      rewindHowJourneyToEntry(function () { leaveHowEntry(true); });
-    } else if (activeRoute === "howEntry") {
-      leaveHowEntry(true);
-    }
+    renderDownstream(distance);
   }
 
   function moveDcCamera(deltaPixels, allowHowEntry) {
@@ -1238,6 +1424,7 @@
       avIntroStop().y,
       avJourney.cameraEnd.y
     );
+    updateAvIntroVisibility();
     scheduleAvCameraMove();
   }
 
@@ -1347,6 +1534,7 @@
           avInputEnabled = true;
           renderAvSignals(avVisualProgress());
         }
+        updateAvIntroVisibility();
         var back = route === "dataCenter"
           ? document.querySelector("[data-dc-back-fixed]")
           : route === "it"
@@ -1388,6 +1576,7 @@
         if (itJourney) renderItSignals(0);
         avReturning = false;
         avInputEnabled = false;
+        updateAvIntroVisibility();
         avTargetY = avJourney ? avIntroStop().y : 1340;
         avVisualY = avTargetY;
         avVisualState.y = avVisualY;
@@ -1445,6 +1634,7 @@
     if (returningRoute === "av") {
       avInputEnabled = false;
       avReturning = true;
+      updateAvIntroVisibility();
       var avDuration = 0.55 + avProgress() * 0.65;
       if (avMoveFrame) {
         window.cancelAnimationFrame(avMoveFrame);
@@ -1550,8 +1740,6 @@
     if (itBack) itBack.addEventListener("click", returnToHub);
     var avBack = document.querySelector("[data-av-back-fixed]");
     if (avBack) avBack.addEventListener("click", returnToHub);
-    var howBack = document.querySelector("[data-how-back-fixed]");
-    if (howBack) howBack.addEventListener("click", handleHowBack);
 
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
