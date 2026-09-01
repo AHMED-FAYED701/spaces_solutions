@@ -409,7 +409,8 @@ window.SPACES_HOME = {
     howWork: {
       cameraStart: { x: 1160, y: 4840 },
       cameraEnd: { x: 960, y: 5870 },
-      cameraPath: "M 1160 4840 L 1160 5263 Q 1160 5305 1202 5305 L 1918 5305 Q 1960 5305 1960 5347 L 1960 5828 Q 1960 5870 1918 5870 L 960 5870",
+      entryToQualificationPath: "M 1160 4840 V 5290",
+      cameraPath: "M 1160 4840 V 5290 L 1450 5305 L 1918 5305 Q 1960 5305 1960 5347 L 1960 5828 Q 1960 5870 1918 5870 L 960 5870",
       cameraStops: [
         { key: "entry", x: 1160, y: 4840 },
         { key: "qualification", x: 1160, y: 5290 },

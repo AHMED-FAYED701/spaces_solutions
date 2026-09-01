@@ -333,13 +333,13 @@ body.route-av .av-back-fixed{display:block}
 
 .how-entry{left:0;top:452rem;width:234rem;height:50rem;color:#fff;opacity:0;pointer-events:none}
 .how-entry-ground{inset:0;z-index:0;background:radial-gradient(34rem 24rem at 50% 50%,rgba(90,45,138,.13),transparent 72%),linear-gradient(90deg,#0b0413,#150826,#0b0413)}
-.how-entry-kicker{z-index:4;left:84rem;top:22.9rem;color:var(--mauve);font:400 .5rem 'DM Mono',monospace;letter-spacing:.22em}
-.how-entry h2{z-index:4;left:84rem;top:24.2rem;width:30rem;font-size:2.35rem;line-height:1.08;letter-spacing:-.04em;font-weight:600}
-.how-entry-support{z-index:4;left:123rem;top:24.2rem;width:24rem;color:var(--soft);font-size:.7rem;line-height:1.62}
+.how-entry-kicker{z-index:4;left:84rem;top:26.2rem;width:30rem;color:var(--mauve);font:400 .5rem 'DM Mono',monospace;letter-spacing:.22em}
+.how-entry h2{z-index:4;left:84rem;top:34.2rem;width:30rem;font-size:2.35rem;line-height:1.08;letter-spacing:-.04em;font-weight:600}
+.how-entry-support{z-index:4;left:123rem;top:28rem;width:24rem;color:var(--soft);font-size:.7rem;line-height:1.62}
 body.route-how-entry .how-entry{opacity:1;pointer-events:auto}
 body.route-how-entry .site-header{opacity:1;pointer-events:auto}
 .how-work{left:0;top:502rem;width:234rem;height:120rem;color:var(--plum2);opacity:0;pointer-events:none}
-.how-work-ground{inset:0;z-index:0;background:linear-gradient(180deg,transparent 0 13rem,#eae3eb 13rem)}
+.how-work-ground{inset:0;z-index:0;background:#eae3eb}
 .how-work-grid{inset:0;z-index:1;background-image:linear-gradient(rgba(47,22,80,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(47,22,80,.045) 1px,transparent 1px);background-size:4rem 4rem;mask-image:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 18%,rgba(0,0,0,.72) 82%,transparent)}
 .how-mobile-headline{display:none}
 .how-stage{z-index:4;height:17rem}
@@ -353,12 +353,14 @@ body.route-how-entry .site-header{opacity:1;pointer-events:auto}
 .readiness-gate i{position:absolute;top:27.5rem;width:1px;height:10.5rem;background:linear-gradient(var(--violet),var(--plum2),var(--violet));will-change:transform}
 .readiness-gate .gate-left{left:188.8rem}.readiness-gate .gate-right{left:193.2rem}
 .readiness-gate span{position:absolute;left:186.5rem;top:40rem;width:9rem;color:var(--violet);font:400 .46rem 'DM Mono',monospace;letter-spacing:.16em}
-.how-ground-transition{position:absolute;z-index:1;left:0;top:522rem;width:234rem;height:18rem;pointer-events:none}
-.how-ground-transition svg{display:block;width:100%;height:100%;overflow:visible}
-.how-transition-edge{fill:none;stroke:#b083ae;stroke-width:1;opacity:.1}
+.how-ground-transition{position:absolute;z-index:1;left:0;top:465rem;width:234rem;height:85rem;pointer-events:none;background:#150826;opacity:0}
+.how-transition-ground-dark,.how-transition-ground-light{position:absolute;inset:0}
+.how-transition-ground-dark{background:radial-gradient(34rem 24rem at 50% 50%,rgba(90,45,138,.13),transparent 72%),linear-gradient(90deg,#0b0413,#150826,#0b0413)}
+.how-transition-ground-light{background:#eae3eb;opacity:0}
 body.route-how-work .how-work{opacity:1;pointer-events:auto}
-body.how-entry-transition .how-entry,body.how-entry-transition .how-work{pointer-events:none}
-body.how-entry-transition .site-header{opacity:1;pointer-events:auto}
+body.route-how-transition .how-entry,body.route-how-transition .how-work{opacity:1;pointer-events:none}
+body.route-how-transition .how-ground-transition{opacity:1}
+body.route-how-transition .site-header{opacity:1;pointer-events:auto}
 body.route-how-work .site-header{opacity:1;pointer-events:auto}
 .how-continuation-signal,.how-entry-trunk-signal{opacity:0}
 body.route-how-entry.how-source-dc [data-how-entry-signal="dc-to-how"],body.route-how-work.how-source-dc [data-how-entry-signal="dc-to-how"],body.route-how-entry.how-source-it [data-how-entry-signal="it-to-how"],body.route-how-work.how-source-it [data-how-entry-signal="it-to-how"],body.route-how-entry.how-source-av [data-how-entry-signal="av-to-how"],body.route-how-work.how-source-av [data-how-entry-signal="av-to-how"],body.route-how-entry .how-entry-trunk-signal,body.route-how-work .how-entry-trunk-signal{opacity:1}

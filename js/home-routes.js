@@ -64,11 +64,18 @@
   var howEntryWheelAccum = 0;
   var howWorkBackAccum = 0;
   var howQualDistance = 0;
+  var howEntryTransitionPath = null;
   var howEntryElement = null;
+  var howEntryContentElements = [];
   var howWorkElement = null;
-  var howWorkGroundElements = [];
-  var howWorkStageElements = [];
-  var HOW_TRANSITION_DURATION = 1.05;
+  var howWorkGroundElement = null;
+  var howWorkGridElement = null;
+  var howTransitionGroundElement = null;
+  var howTransitionDarkElement = null;
+  var howTransitionLightElement = null;
+  var howQualificationElement = null;
+  var howFutureStageElements = [];
+  var HOW_TRANSITION_DURATION = 1.10;
   var HOW_TRANSITION_THRESHOLD = 18;
   var whyJourney = null;
   var whyJourneyPath = null;
@@ -403,7 +410,8 @@
 
   function fadeWindow(t, from, to) {
     if (to <= from) return t >= to ? 1 : 0;
-    return clamp((t - from) / (to - from), 0, 1);
+    var value = clamp((t - from) / (to - from), 0, 1);
+    return value * value * (3 - 2 * value);
   }
 
   function wheelPixels(event) {
@@ -414,36 +422,82 @@
 
   function bindHowTransitionElements() {
     howEntryElement = document.querySelector(".how-entry");
-    howWorkElement = document.querySelector(".how-work");
-    howWorkGroundElements = Array.prototype.slice.call(
+    howEntryContentElements = Array.prototype.slice.call(
       document.querySelectorAll(
-        ".how-work-ground,.how-work-grid,.how-ground-transition"
+        ".how-entry-kicker,.how-entry h2,.how-entry-support"
       )
     );
-    howWorkStageElements = Array.prototype.slice.call(
-      document.querySelectorAll(".how-stage,.readiness-gate")
+    howWorkElement = document.querySelector(".how-work");
+    howWorkGroundElement = document.querySelector(".how-work-ground");
+    howWorkGridElement = document.querySelector(".how-work-grid");
+    howTransitionGroundElement = document.querySelector(".how-ground-transition");
+    howTransitionDarkElement = document.querySelector(".how-transition-ground-dark");
+    howTransitionLightElement = document.querySelector(".how-transition-ground-light");
+    howQualificationElement = document.querySelector(".how-stage-01");
+    howFutureStageElements = Array.prototype.slice.call(
+      document.querySelectorAll(
+        ".how-stage-02,.how-stage-03,.how-stage-04,.how-stage-05,.how-stage-06,.readiness-gate"
+      )
     );
   }
 
-  function applyHowTransitionOpacity(entry, ground, stages) {
-    if (howEntryElement) howEntryElement.style.opacity = String(entry);
-    if (howWorkElement) howWorkElement.style.opacity = "1";
-    howWorkGroundElements.forEach(function (element) {
-      element.style.opacity = String(ground);
+  function applyHowTransitionOpacity(entry, dark, light, grid, qualification) {
+    if (howEntryElement) howEntryElement.style.opacity = "1";
+    howEntryContentElements.forEach(function (element) {
+      element.style.opacity = String(entry);
     });
-    howWorkStageElements.forEach(function (element) {
-      element.style.opacity = String(stages);
+    if (howWorkElement) howWorkElement.style.opacity = "1";
+    if (howWorkGroundElement) howWorkGroundElement.style.opacity = "1";
+    if (howTransitionGroundElement) howTransitionGroundElement.style.opacity = "1";
+    if (howTransitionDarkElement) howTransitionDarkElement.style.opacity = String(dark);
+    if (howTransitionLightElement) howTransitionLightElement.style.opacity = String(light);
+    if (howWorkGridElement) howWorkGridElement.style.opacity = String(grid);
+    if (howQualificationElement) howQualificationElement.style.opacity = String(qualification);
+    howFutureStageElements.forEach(function (element) {
+      element.style.opacity = "0";
     });
   }
 
   function clearHowTransitionOpacity() {
     if (howEntryElement) howEntryElement.style.opacity = "";
-    if (howWorkElement) howWorkElement.style.opacity = "";
-    howWorkGroundElements.forEach(function (element) {
+    howEntryContentElements.forEach(function (element) {
       element.style.opacity = "";
     });
-    howWorkStageElements.forEach(function (element) {
+    if (howWorkElement) howWorkElement.style.opacity = "";
+    if (howWorkGroundElement) howWorkGroundElement.style.opacity = "";
+    if (howWorkGridElement) howWorkGridElement.style.opacity = "";
+    if (howTransitionGroundElement) howTransitionGroundElement.style.opacity = "";
+    if (howTransitionDarkElement) howTransitionDarkElement.style.opacity = "";
+    if (howTransitionLightElement) howTransitionLightElement.style.opacity = "";
+    if (howQualificationElement) howQualificationElement.style.opacity = "";
+    howFutureStageElements.forEach(function (element) {
       element.style.opacity = "";
+    });
+  }
+
+  function mixChannel(from, to, progress) {
+    return Math.round(from + (to - from) * progress);
+  }
+
+  function applyHowSignalColor(progress) {
+    var colorProgress = fadeWindow(progress, 0.10, 0.30);
+    var core = "rgb(" + [
+      mixChannel(243, 47, colorProgress),
+      mixChannel(233, 22, colorProgress),
+      mixChannel(255, 80, colorProgress)
+    ].join(",") + ")";
+    var glow = "rgb(" + [
+      mixChannel(201, 176, colorProgress),
+      mixChannel(164, 131, colorProgress),
+      mixChannel(255, 174, colorProgress)
+    ].join(",") + ")";
+    var signalRuns = howTrunkRuns.concat(howContinuousRuns);
+    Object.keys(howSignalRuns).forEach(function (key) {
+      signalRuns = signalRuns.concat(howSignalRuns[key]);
+    });
+    signalRuns.forEach(function (run) {
+      if (run.element.classList.contains("sig-core")) run.element.style.stroke = core;
+      else if (run.element.classList.contains("sig-glow")) run.element.style.stroke = glow;
     });
   }
 
@@ -696,6 +750,9 @@
   function bindHowJourney() {
     howJourney = DATA.branchJourneys && DATA.branchJourneys.howWork;
     if (!howJourney) return;
+    howEntryTransitionPath = createSampledPath(
+      howJourney.entryToQualificationPath || "M 1160 4840 V 5290"
+    );
     howJourneyPath = createSampledPath(howJourney.cameraPath);
     howPathLength = howJourneyPath.length;
     howContinuousRuns = Array.prototype.slice.call(
@@ -818,6 +875,8 @@
       "route-how-entry",
       source === "dataCenter" ? "how-source-dc" : source === "it" ? "how-source-it" : "how-source-av"
     );
+    if (howQualificationElement) howQualificationElement.style.opacity = "0";
+    if (howWorkGridElement) howWorkGridElement.style.opacity = "0";
 
     function finishArrival() {
       if (!cameraDone || !signalDone) return;
@@ -884,12 +943,14 @@
    * STATE A (1160,4840) -> STATE B (1160,5290) as ONE authored move.
    *
    * There is no interactive stop between the two positions: the ground swap,
-   * the header theme and the signal all resolve inside this single 1.05s
+   * the header theme and the signal all resolve inside this single 1.10s
    * traversal of the existing How camera path.
    */
   function startHowEntryTransition() {
     if (!howInputEnabled || howReturning || howTransitioning) return;
-    if (!howJourneyPath || howQualDistance <= 0) return;
+    if (!howJourneyPath || !howEntryTransitionPath || howQualDistance <= 0) return;
+    var runtime = window.SPACES_RUNTIME;
+    if (!runtime) return;
     howInputEnabled = false;
     howWorkInputEnabled = false;
     howWorkReturning = false;
@@ -901,10 +962,10 @@
     howRenderedDistance = 0;
     howRenderState.distance = 0;
     renderHowJourney(0);
-    activeRoute = "howWork";
-    document.body.classList.remove("route-how-entry");
-    document.body.classList.add("route-how-work", "how-entry-transition");
-    applyHowTransitionOpacity(1, 0, 0);
+    activeRoute = "howTransition";
+    document.body.classList.add("route-how-transition");
+    applyHowTransitionOpacity(1, 1, 0, 0, 0);
+    applyHowSignalColor(0);
 
     var state = { t: 0 };
     if (howEntryTransitionTween) howEntryTransitionTween.kill();
@@ -915,21 +976,42 @@
       overwrite: true,
       onUpdate: function () {
         var t = clamp(state.t, 0, 1);
-        howRenderState.distance = howQualDistance * easePower3InOut(t);
-        renderHowDistance();
+        var eased = easePower3InOut(t);
+        howRenderState.distance = howQualDistance * eased;
+        renderHowJourney(0);
+        runtime.moveCameraTo(
+          howEntryTransitionPath.element.getPointAtLength(
+            howEntryTransitionPath.length * eased
+          ),
+          0,
+          "none"
+        );
+        var signalReveal = fadeWindow(t, 0.24, 0.78);
+        howContinuousRuns.forEach(function (run) {
+          run.element.style.strokeDashoffset = String(run.length - 138 * signalReveal);
+        });
+        applyHowSignalColor(t);
         applyHowTransitionOpacity(
-          1 - fadeWindow(t, 0.12, 0.48),
-          fadeWindow(t, 0.22, 0.62),
-          fadeWindow(t, 0.38, 0.74)
+          1 - fadeWindow(t, 0.18, 0.62),
+          1 - fadeWindow(t, 0.08, 0.58),
+          fadeWindow(t, 0.05, 0.55),
+          fadeWindow(t, 0.26, 0.64),
+          fadeWindow(t, 0.38, 0.72)
         );
       },
       onComplete: function () {
         howEntryTransitionTween = null;
         howRenderState.distance = howQualDistance;
         howTargetDistance = howQualDistance;
-        renderHowDistance();
+        renderHowJourney(howQualDistance / howPathLength);
+        howContinuousRuns.forEach(function (run) {
+          run.element.style.strokeDashoffset = String(run.length - 138);
+        });
+        applyHowSignalColor(1);
+        runtime.moveCameraTo({ x: 1160, y: 5290 }, 0, "none");
         clearHowTransitionOpacity();
-        document.body.classList.remove("how-entry-transition");
+        document.body.classList.remove("route-how-entry", "route-how-transition");
+        document.body.classList.add("route-how-work");
         howTransitioning = false;
         howEntryWheelAccum = 0;
         howWorkBackAccum = 0;
@@ -950,10 +1032,11 @@
     howEntryWheelAccum = 0;
     howWorkBackAccum = 0;
     killHowRenderTween();
-    var startDistance = howRenderedDistance;
-    document.body.classList.remove("route-how-work");
-    document.body.classList.add("route-how-entry", "how-entry-transition");
-    applyHowTransitionOpacity(0, 1, 1);
+    var runtime = window.SPACES_RUNTIME;
+    document.body.classList.add("route-how-transition");
+    activeRoute = "howTransition";
+    applyHowTransitionOpacity(0, 0, 1, 1, 1);
+    applyHowSignalColor(1);
 
     var state = { t: 0 };
     if (howEntryTransitionTween) howEntryTransitionTween.kill();
@@ -964,16 +1047,35 @@
       overwrite: true,
       onUpdate: function () {
         var t = clamp(state.t, 0, 1);
-        howRenderState.distance = startDistance * (1 - easePower3InOut(t));
-        renderHowDistance();
-        var leaving = 1 - fadeWindow(t, 0.10, 0.46);
-        applyHowTransitionOpacity(fadeWindow(t, 0.30, 0.72), leaving, leaving);
+        var forwardT = 1 - t;
+        var eased = easePower3InOut(forwardT);
+        howRenderState.distance = howQualDistance * eased;
+        renderHowJourney(0);
+        runtime.moveCameraTo(
+          howEntryTransitionPath.element.getPointAtLength(
+            howEntryTransitionPath.length * eased
+          ),
+          0,
+          "none"
+        );
+        var signalReveal = fadeWindow(forwardT, 0.24, 0.78);
+        howContinuousRuns.forEach(function (run) {
+          run.element.style.strokeDashoffset = String(run.length - 138 * signalReveal);
+        });
+        applyHowSignalColor(forwardT);
+        applyHowTransitionOpacity(
+          1 - fadeWindow(forwardT, 0.18, 0.62),
+          1 - fadeWindow(forwardT, 0.08, 0.58),
+          fadeWindow(forwardT, 0.05, 0.55),
+          fadeWindow(forwardT, 0.26, 0.64),
+          fadeWindow(forwardT, 0.38, 0.72)
+        );
       },
       onComplete: function () {
         howEntryTransitionTween = null;
         howRenderState.distance = 0;
         renderHowDistance();
-        document.body.classList.remove("how-entry-transition");
+        document.body.classList.remove("route-how-transition");
         howTransitioning = false;
         restoreHowEntry();
       }
@@ -983,12 +1085,15 @@
   function restoreHowEntry() {
     killHowRenderTween();
     clearHowTransitionOpacity();
-    document.body.classList.remove("how-entry-transition");
+    if (howQualificationElement) howQualificationElement.style.opacity = "0";
+    if (howWorkGridElement) howWorkGridElement.style.opacity = "0";
+    document.body.classList.remove("route-how-transition");
     howTransitioning = false;
     howTargetDistance = 0;
     howRenderedDistance = 0;
     howRenderState.distance = 0;
     renderHowJourney(0);
+    applyHowSignalColor(0);
     howWorkInputEnabled = false;
     howWorkReturning = false;
     howEntryWheelAccum = 0;
@@ -1234,8 +1339,8 @@
     var span = howRenderedDistance;
     howWorkInputEnabled = false;
     howWorkReturning = true;
-    document.body.classList.add("how-entry-transition");
-    applyHowTransitionOpacity(0, 1, 1);
+    document.body.classList.add("route-how-transition");
+    applyHowTransitionOpacity(0, 0, 1, 1, 1);
     window.gsap.to(state, {
       distance: 0,
       duration: duration,
@@ -1252,7 +1357,13 @@
         );
         var t = span > 0 ? clamp(1 - state.distance / span, 0, 1) : 1;
         var leaving = 1 - fadeWindow(t, 0.10, 0.46);
-        applyHowTransitionOpacity(fadeWindow(t, 0.30, 0.72), leaving, leaving);
+        applyHowTransitionOpacity(
+          fadeWindow(t, 0.30, 0.72),
+          fadeWindow(t, 0.30, 0.72),
+          leaving,
+          leaving,
+          leaving
+        );
       },
       onComplete: function () {
         restoreHowEntry();
@@ -1379,18 +1490,28 @@
   }
 
   function onTouchStart(event) {
-    if ((activeRoute === "dataCenter" || activeRoute === "it" || activeRoute === "av" || activeRoute === "howWork" || activeRoute === "whySpaces" || activeRoute === "finalCta") && event.touches.length) {
+    if ((activeRoute === "dataCenter" || activeRoute === "it" || activeRoute === "av" || activeRoute === "howEntry" || activeRoute === "howWork" || activeRoute === "whySpaces" || activeRoute === "finalCta") && event.touches.length) {
       touchY = event.touches[0].clientY;
     }
   }
 
   function onTouchMove(event) {
-    if ((activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howWork" && activeRoute !== "whySpaces" && activeRoute !== "finalCta") || touchY === null || !event.touches.length) return;
+    if ((activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork" && activeRoute !== "whySpaces" && activeRoute !== "finalCta") || touchY === null || !event.touches.length) return;
     event.preventDefault();
     var nextY = event.touches[0].clientY;
     if (activeRoute === "dataCenter") moveDcCamera(touchY - nextY, false);
     else if (activeRoute === "it") moveItCamera(touchY - nextY, false);
     else if (activeRoute === "av") moveAvCamera(touchY - nextY, false);
+    else if (activeRoute === "howEntry") {
+      var howTouchPixels = touchY - nextY;
+      if (howTouchPixels > 0) {
+        howEntryWheelAccum += howTouchPixels;
+        if (howEntryWheelAccum >= HOW_TRANSITION_THRESHOLD) startHowEntryTransition();
+      } else if (howTouchPixels < 0) {
+        howEntryWheelAccum = 0;
+        if (howTouchPixels < -12) leaveHowEntry(false);
+      }
+    }
     else if (activeRoute === "howWork") moveHowJourney(touchY - nextY);
     else if (activeRoute === "whySpaces") moveWhyJourney(touchY - nextY);
     else moveCtaJourney(touchY - nextY);
@@ -1465,7 +1586,7 @@
           "route-av",
           "route-how-entry",
           "route-how-work",
-          "how-entry-transition",
+          "route-how-transition",
           "route-why-spaces",
           "route-final-cta",
           "how-source-dc",
