@@ -161,7 +161,7 @@ window.SPACES_HOME = {
       y: 1020,
       w: 800,
       h: 500,
-      cameraStop: { x: 1960, y: 1260 }
+      cameraStop: { x: 1940, y: 1340 }
     },
 
     dcServices: {
@@ -213,7 +213,7 @@ window.SPACES_HOME = {
       y: 1520,
       w: 800,
       h: 500,
-      cameraStop: { x: 1160, y: 1750 }
+      cameraStop: { x: 1140, y: 1840 }
     },
 
     howEntry: {
@@ -325,14 +325,14 @@ window.SPACES_HOME = {
       y: 1230
     },
     dataCenter: {
-      path: "M 1140 1230 H 1960",
-      target: { x: 1960, y: 1260 },
+      path: "M 1140 1230 H 1940",
+      target: { x: 1940, y: 1340 },
       duration: 1.15,
       ease: "power3.inOut"
     },
     it: {
-      path: "M 1140 1230 V 1750",
-      target: { x: 1160, y: 1750 },
+      path: "M 1140 1230 V 1840",
+      target: { x: 1140, y: 1840 },
       duration: 0.90,
       ease: "power3.inOut"
     },
@@ -348,42 +348,61 @@ window.SPACES_HOME = {
 
   branchJourneys: {
     dataCenter: {
-      cameraStart: { x: 1960, y: 1260 },
-      cameraEnd: { x: 1960, y: 3790 },
-      cameraPath: "M 1960 1260 V 3790",
+      cameraStart: { x: 1940, y: 1260 },
+      introStop: { x: 1940, y: 1340 },
+      cameraEnd: { x: 1940, y: 3790 },
+      cameraPath: "M 1940 1260 V 3790",
       cameraStops: [
-        { key: "intro", x: 1960, y: 1260 }, { key: "service01", x: 1960, y: 1790 },
-        { key: "service02", x: 1960, y: 2190 }, { key: "service03", x: 1960, y: 2590 },
-        { key: "service04", x: 1960, y: 2990 }, { key: "service05", x: 1960, y: 3390 },
-        { key: "service06", x: 1960, y: 3790 }
+        { key: "intro", x: 1940, y: 1260 },
+        { key: "overview", x: 1940, y: 1710 },
+        { key: "service01", x: 1940, y: 2060 },
+        { key: "service02", x: 1940, y: 2380 },
+        { key: "service03", x: 1940, y: 2700 },
+        { key: "service04", x: 1940, y: 3020 },
+        { key: "service05", x: 1940, y: 3340 },
+        { key: "service06", x: 1940, y: 3660 }
+      ],
+      contentReveals: [
+        { key: "overview", from: 0.10 },
+        { key: "service01", from: 0.26 },
+        { key: "service02", from: 0.39 },
+        { key: "service03", from: 0.52 },
+        { key: "service04", from: 0.65 },
+        { key: "service05", from: 0.78 },
+        { key: "service06", from: 0.91 }
       ],
       signals: [
-        { key: "dc-service-01", d: "M 1960 1510 V 1643 Q 1960 1655 1972 1655 H 2128 Q 2140 1655 2140 1667 V 1743 Q 2140 1755 2128 1755 H 1972 Q 1960 1755 1960 1767 V 1990", window: { from: 0.04, to: 0.23 } },
-        { key: "dc-service-02", d: "M 1960 1990 V 2043 Q 1960 2055 1948 2055 H 1772 Q 1760 2055 1760 2067 V 2143 Q 1760 2155 1772 2155 H 1948 Q 1960 2155 1960 2167 V 2390", window: { from: 0.19, to: 0.39 } },
-        { key: "dc-service-03", d: "M 1960 2390 V 2443 Q 1960 2455 1972 2455 H 2128 Q 2140 2455 2140 2467 V 2543 Q 2140 2555 2128 2555 H 1972 Q 1960 2555 1960 2567 V 2790", window: { from: 0.35, to: 0.55 } },
-        { key: "dc-service-04", d: "M 1960 2790 V 2843 Q 1960 2855 1948 2855 H 1772 Q 1760 2855 1760 2867 V 2943 Q 1760 2955 1772 2955 H 1948 Q 1960 2955 1960 2967 V 3190", window: { from: 0.51, to: 0.71 } },
-        { key: "dc-service-05", d: "M 1960 3190 V 3243 Q 1960 3255 1972 3255 H 2128 Q 2140 3255 2140 3267 V 3343 Q 2140 3355 2128 3355 H 1972 Q 1960 3355 1960 3367 V 3590", window: { from: 0.67, to: 0.87 } },
-        { key: "dc-service-06", d: "M 1960 3590 V 3643 Q 1960 3655 1948 3655 H 1772 Q 1760 3655 1760 3667 V 3743 Q 1760 3755 1772 3755 H 1948 Q 1960 3755 1960 3767 V 3990", window: { from: 0.83, to: 1.00 } }
+        { key: "continuous", d: "M 1940 1510 V 1900 V 1948 Q 1940 1972 1916 1972 H 1661 Q 1637 1972 1637 1996 V 2124 Q 1637 2148 1661 2148 H 1916 Q 1940 2148 1940 2172 V 2220 V 2268 Q 1940 2292 1964 2292 H 2219 Q 2243 2292 2243 2316 V 2444 Q 2243 2468 2219 2468 H 1964 Q 1940 2468 1940 2492 V 2540 V 2588 Q 1940 2612 1916 2612 H 1661 Q 1637 2612 1637 2636 V 2764 Q 1637 2788 1661 2788 H 1916 Q 1940 2788 1940 2812 V 2860 V 2908 Q 1940 2932 1964 2932 H 2219 Q 2243 2932 2243 2956 V 3084 Q 2243 3108 2219 3108 H 1964 Q 1940 3108 1940 3132 V 3180 V 3228 Q 1940 3252 1916 3252 H 1661 Q 1637 3252 1637 3276 V 3404 Q 1637 3428 1661 3428 H 1916 Q 1940 3428 1940 3452 V 3500 V 3548 Q 1940 3572 1964 3572 H 2219 Q 2243 3572 2243 3596 V 3724 Q 2243 3748 2219 3748 H 1964 Q 1940 3748 1940 3772 V 3990" }
       ]
     },
     it: {
-      cameraStart: { x: 1160, y: 1750 },
-      cameraEnd: { x: 1160, y: 4290 },
-      cameraPath: "M 1160 1750 V 4290",
+      cameraStart: { x: 1140, y: 1760 },
+      introStop: { x: 1140, y: 1840 },
+      cameraEnd: { x: 1140, y: 4290 },
+      cameraPath: "M 1140 1760 V 4290",
       cameraStops: [
-        { key: "intro", x: 1160, y: 1750 },
-        { key: "service01", x: 1160, y: 2290 },
-        { key: "service02", x: 1160, y: 2690 },
-        { key: "service03", x: 1160, y: 3090 },
-        { key: "service04", x: 1160, y: 3490 },
-        { key: "service05", x: 1160, y: 3890 },
-        { key: "service06", x: 1160, y: 4290 }
+        { key: "intro", x: 1140, y: 1760 },
+        { key: "overview", x: 1140, y: 2210 },
+        { key: "service01", x: 1140, y: 2560 },
+        { key: "service02", x: 1140, y: 2880 },
+        { key: "service03", x: 1140, y: 3200 },
+        { key: "service04", x: 1140, y: 3520 },
+        { key: "service05", x: 1140, y: 3840 },
+        { key: "service06", x: 1140, y: 4160 }
+      ],
+      contentReveals: [
+        { key: "overview", from: 0.10 },
+        { key: "service01", from: 0.26 },
+        { key: "service02", from: 0.39 },
+        { key: "service03", from: 0.52 },
+        { key: "service04", from: 0.65 },
+        { key: "service05", from: 0.78 },
+        { key: "service06", from: 0.91 }
       ],
       signals: [
         {
-          key: "it-services",
-          d: "M 1160 2040 V 2143 Q 1160 2155 1172 2155 H 1328 Q 1340 2155 1340 2167 V 2243 Q 1340 2255 1328 2255 H 1172 Q 1160 2255 1160 2267 V 2440 M 1160 2440 V 2543 Q 1160 2555 1148 2555 H 972 Q 960 2555 960 2567 V 2643 Q 960 2655 972 2655 H 1148 Q 1160 2655 1160 2667 V 2840 M 1160 2840 V 2943 Q 1160 2955 1172 2955 H 1328 Q 1340 2955 1340 2967 V 3043 Q 1340 3055 1328 3055 H 1172 Q 1160 3055 1160 3067 V 3240 M 1160 3240 V 3343 Q 1160 3355 1148 3355 H 972 Q 960 3355 960 3367 V 3443 Q 960 3455 972 3455 H 1148 Q 1160 3455 1160 3467 V 3640 M 1160 3640 V 3743 Q 1160 3755 1172 3755 H 1328 Q 1340 3755 1340 3767 V 3843 Q 1340 3855 1328 3855 H 1172 Q 1160 3855 1160 3867 V 4040 M 1160 4040 V 4143 Q 1160 4155 1148 4155 H 972 Q 960 4155 960 4167 V 4243 Q 960 4255 972 4255 H 1148 Q 1160 4255 1160 4267 V 4440",
-          window: { from: 0, to: 1 }
+          key: "continuous",
+          d: "M 1140 2010 V 2400 V 2448 Q 1140 2472 1116 2472 H 861 Q 837 2472 837 2496 V 2624 Q 837 2648 861 2648 H 1116 Q 1140 2648 1140 2672 V 2720 V 2768 Q 1140 2792 1164 2792 H 1419 Q 1443 2792 1443 2816 V 2944 Q 1443 2968 1419 2968 H 1164 Q 1140 2968 1140 2992 V 3040 V 3088 Q 1140 3112 1116 3112 H 861 Q 837 3112 837 3136 V 3264 Q 837 3288 861 3288 H 1116 Q 1140 3288 1140 3312 V 3360 V 3408 Q 1140 3432 1164 3432 H 1419 Q 1443 3432 1443 3456 V 3584 Q 1443 3608 1419 3608 H 1164 Q 1140 3608 1140 3632 V 3680 V 3728 Q 1140 3752 1116 3752 H 861 Q 837 3752 837 3776 V 3904 Q 837 3928 861 3928 H 1116 Q 1140 3928 1140 3952 V 4000 V 4048 Q 1140 4072 1164 4072 H 1419 Q 1443 4072 1443 4096 V 4224 Q 1443 4248 1419 4248 H 1184 Q 1160 4248 1160 4272 V 4490"
         }
       ]
     },
@@ -572,16 +591,16 @@ window.SPACES_HOME = {
     sources: {
       dataCenter: {
         key: "dc-to-how",
-        cameraPath: "M 1960 3790 V 4798 Q 1960 4840 1918 4840 H 1160",
-        cameraDuration: 1.65,
-        signalPath: "M 1960 3990 V 4798 Q 1960 4840 1918 4840 H 1202 Q 1160 4840 1160 4882 V 4950",
-        revealDuration: 1.35
+        cameraPath: "M 1940 3790 V 4798 Q 1940 4840 1898 4840 H 1160",
+        cameraDuration: 1.55,
+        signalPath: "M 1940 3990 V 4798 Q 1940 4840 1898 4840 H 1202 Q 1160 4840 1160 4882 V 4950",
+        revealDuration: 1.25
       },
       it: {
         key: "it-to-how",
-        cameraPath: "M 1160 4290 L 1160 4840",
+        cameraPath: "M 1140 4290 V 4472 Q 1140 4480 1148 4480 H 1152 Q 1160 4480 1160 4488 V 4840",
         cameraDuration: 0.85,
-        signalPath: "M 1160 4440 V 4950",
+        signalPath: "M 1160 4490 V 4950",
         revealDuration: 0.60
       },
       av: {
@@ -599,17 +618,19 @@ window.SPACES_HOME = {
   routeSignals: {
     dataCenter: {
       key: "route-dc",
-      d: "M 1410 1300 V 1428 Q 1410 1440 1422 1440 H 1948 Q 1960 1440 1960 1452 V 1510",
-      start: { x: 1410, y: 1300 },
-      end: { x: 1960, y: 1510 },
+      cardThrough: "M 1385 1248 V 1388",
+      d: "M 1385 1388 V 1438 Q 1385 1450 1397 1450 H 1928 Q 1940 1450 1940 1462 V 1510",
+      start: { x: 1385, y: 1248 },
+      end: { x: 1940, y: 1510 },
       revealDuration: 0.90
     },
     it: {
       key: "route-it",
-      d: "M 1160 1300 V 2040",
-      start: { x: 1160, y: 1300 },
-      end: { x: 1160, y: 2040 },
-      revealDuration: 0.78
+      cardThrough: "M 1140 1248 V 1388",
+      d: "M 1140 1388 V 2010",
+      start: { x: 1140, y: 1248 },
+      end: { x: 1140, y: 2010 },
+      revealDuration: 0.90
     },
     av: {
       key: "route-av",

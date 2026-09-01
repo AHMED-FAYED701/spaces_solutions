@@ -12,12 +12,42 @@
   var controls = [];
   var dcJourney = null;
   var dcRuns = [];
-  var dcTargetY = 1530;
+  var dcTargetY = 1340;
+  var dcVisualY = 1340;
+  var dcVisualState = { y: 1340 };
+  var dcMoveFrame = 0;
+  var dcSignalAnchors = [
+    { y: 1340, p: 0.0000000000 },
+    { y: 1710, p: 0.0508562694 },
+    { y: 1800, p: 0.0661131503 },
+    { y: 2060, p: 0.1806028546 },
+    { y: 2380, p: 0.3314475708 },
+    { y: 2700, p: 0.4822922869 },
+    { y: 3020, p: 0.6331370031 },
+    { y: 3340, p: 0.7839817193 },
+    { y: 3660, p: 0.9348264355 },
+    { y: 3790, p: 1.0000000000 }
+  ];
   var dcInputEnabled = false;
   var dcReturning = false;
   var itJourney = null;
   var itRuns = [];
-  var itTargetY = 2030;
+  var itTargetY = 1840;
+  var itVisualY = 1840;
+  var itVisualState = { y: 1840 };
+  var itMoveFrame = 0;
+  var itSignalAnchors = [
+    { y: 1840, p: 0.0000000000 },
+    { y: 2210, p: 0.0508562694 },
+    { y: 2300, p: 0.0661131503 },
+    { y: 2560, p: 0.1806028546 },
+    { y: 2880, p: 0.3314475708 },
+    { y: 3200, p: 0.4822922869 },
+    { y: 3520, p: 0.6331370031 },
+    { y: 3840, p: 0.7839817193 },
+    { y: 4160, p: 0.9348264355 },
+    { y: 4290, p: 1.0000000000 }
+  ];
   var itInputEnabled = false;
   var itReturning = false;
   var avJourney = null;
@@ -96,9 +126,10 @@
   /*
    * DOWNSTREAM — WHY + CONTACT.
    *
-   * Same continuous controller, same camera path, same gain. These are
-   * cumulative distances along continuousJourneyPath, measured from the live
-   * path at bind time (never hard-coded), in the order authored in home.js:
+   * Same continuous controller and camera path. The input gain returns to 1.00
+   * after Handover. These are cumulative distances along continuousJourneyPath,
+   * measured from the live path at bind time (never hard-coded), in the order
+   * authored in home.js:
    *
    * handover, whyIntro, reason01..04, whyExit, contact.
    */
@@ -240,26 +271,55 @@
     return Math.max(min, Math.min(max, value));
   }
 
+  function dcIntroStop() {
+    return (dcJourney && dcJourney.introStop) || dcJourney.cameraStart;
+  }
+
+  function updateDcIntroVisibility() {
+    var atIntro = !!dcJourney &&
+      activeRoute === "dataCenter" &&
+      dcInputEnabled &&
+      !dcReturning &&
+      dcTargetY <= dcIntroStop().y + 0.5;
+    document.body.classList.toggle("at-dc-intro", atIntro);
+  }
+
   function dcProgress() {
     return (dcTargetY - dcJourney.cameraStart.y) /
       (dcJourney.cameraEnd.y - dcJourney.cameraStart.y);
   }
 
-  function renderDcSignals(progress) {
-    document.querySelectorAll(".dc-service").forEach(function (service, index) {
-      service.classList.toggle("is-active", progress >= Math.max(0, index / 6 - 0.06));
-    });
-    dcRuns.forEach(function (group) {
-      var range = group.definition.window.to - group.definition.window.from;
-      var reveal = clamp(
-        (progress - group.definition.window.from) / range,
-        0,
-        1
-      );
+  function dcVisualProgress() {
+    return clamp(
+      (dcVisualY - dcJourney.cameraStart.y) /
+        (dcJourney.cameraEnd.y - dcJourney.cameraStart.y),
+      0,
+      1
+    );
+  }
 
-      group.runs.forEach(function (run) {
-        run.element.style.strokeDashoffset = String(run.length * (1 - reveal));
-      });
+  function dcSignalPathProgress(y) {
+    if (y <= dcSignalAnchors[0].y) return 0;
+    for (var index = 1; index < dcSignalAnchors.length; index += 1) {
+      var upper = dcSignalAnchors[index];
+      if (y <= upper.y) {
+        var lower = dcSignalAnchors[index - 1];
+        var localProgress = (y - lower.y) / (upper.y - lower.y);
+        return clamp(lower.p + (upper.p - lower.p) * localProgress, 0, 1);
+      }
+    }
+    return 1;
+  }
+
+  function renderDcSignals(progress) {
+    var contentReveals = (dcJourney && dcJourney.contentReveals) || [];
+    contentReveals.forEach(function (definition) {
+      var content = document.querySelector('[data-dc-content="' + definition.key + '"]');
+      if (content) content.classList.toggle("is-active", progress >= definition.from);
+    });
+    var signalProgress = dcSignalPathProgress(dcVisualY);
+    dcRuns.forEach(function (run) {
+      run.element.style.strokeDashoffset = String(run.length * (1 - signalProgress));
     });
   }
 
@@ -267,20 +327,27 @@
     dcJourney = DATA.branchJourneys && DATA.branchJourneys.dataCenter;
     if (!dcJourney) return;
 
-    dcRuns = dcJourney.signals.map(function (definition) {
-      var paths = Array.prototype.slice.call(
-        document.querySelectorAll('[data-dc-signal="' + definition.key + '"] path')
-      );
-      return {
-        definition: definition,
-        runs: paths.map(function (path) {
-          var length = path.getTotalLength();
-          path.style.strokeDasharray = String(length);
-          path.style.strokeDashoffset = String(length);
-          return { element: path, length: length };
-        })
-      };
+    dcRuns = Array.prototype.slice.call(
+      document.querySelectorAll('[data-dc-signal="continuous"] path')
+    ).map(function (path) {
+      var length = path.getTotalLength();
+      path.style.strokeDasharray = String(length);
+      path.style.strokeDashoffset = String(length);
+      return { element: path, length: length };
     });
+  }
+
+  function itIntroStop() {
+    return (itJourney && itJourney.introStop) || itJourney.cameraStart;
+  }
+
+  function updateItIntroVisibility() {
+    var atIntro = !!itJourney &&
+      activeRoute === "it" &&
+      itInputEnabled &&
+      !itReturning &&
+      itTargetY <= itIntroStop().y + 0.5;
+    document.body.classList.toggle("at-it-intro", atIntro);
   }
 
   function itProgress() {
@@ -288,35 +355,50 @@
       (itJourney.cameraEnd.y - itJourney.cameraStart.y);
   }
 
+  function itVisualProgress() {
+    return clamp(
+      (itVisualY - itJourney.cameraStart.y) /
+        (itJourney.cameraEnd.y - itJourney.cameraStart.y),
+      0,
+      1
+    );
+  }
+
+  function itSignalPathProgress(y) {
+    if (y <= itSignalAnchors[0].y) return 0;
+    for (var index = 1; index < itSignalAnchors.length; index += 1) {
+      var upper = itSignalAnchors[index];
+      if (y <= upper.y) {
+        var lower = itSignalAnchors[index - 1];
+        var localProgress = (y - lower.y) / (upper.y - lower.y);
+        return clamp(lower.p + (upper.p - lower.p) * localProgress, 0, 1);
+      }
+    }
+    return 1;
+  }
+
   function renderItSignals(progress) {
-    document.querySelectorAll(".it-service").forEach(function (service, index) {
-      service.classList.toggle("is-active", progress >= Math.max(0, index / 6 - 0.06));
+    var contentReveals = (itJourney && itJourney.contentReveals) || [];
+    contentReveals.forEach(function (definition) {
+      var content = document.querySelector('[data-it-content="' + definition.key + '"]');
+      if (content) content.classList.toggle("is-active", progress >= definition.from);
     });
-    itRuns.forEach(function (group) {
-      var range = group.definition.window.to - group.definition.window.from;
-      var reveal = clamp((progress - group.definition.window.from) / range, 0, 1);
-      group.runs.forEach(function (run) {
-        run.element.style.strokeDashoffset = String(run.length * (1 - reveal));
-      });
+    var signalProgress = itSignalPathProgress(itVisualY);
+    itRuns.forEach(function (run) {
+      run.element.style.strokeDashoffset = String(run.length * (1 - signalProgress));
     });
   }
 
   function bindItSignals() {
     itJourney = DATA.branchJourneys && DATA.branchJourneys.it;
     if (!itJourney) return;
-    itRuns = itJourney.signals.map(function (definition) {
-      var paths = Array.prototype.slice.call(
-        document.querySelectorAll('[data-it-signal="' + definition.key + '"] path')
-      );
-      return {
-        definition: definition,
-        runs: paths.map(function (path) {
-          var length = path.getTotalLength();
-          path.style.strokeDasharray = String(length);
-          path.style.strokeDashoffset = String(length);
-          return { element: path, length: length };
-        })
-      };
+    itRuns = Array.prototype.slice.call(
+      document.querySelectorAll('[data-it-signal="continuous"] path')
+    ).map(function (path) {
+      var length = path.getTotalLength();
+      path.style.strokeDasharray = String(length);
+      path.style.strokeDashoffset = String(length);
+      return { element: path, length: length };
     });
   }
 
@@ -1019,7 +1101,13 @@
     howEntryWheelAccum = 0;
     howWorkBackAccum = 0;
     if (source === "dataCenter") dcInputEnabled = false;
-    else if (source === "it") itInputEnabled = false;
+    else if (source === "it") {
+      itInputEnabled = false;
+      itTargetY = itJourney.cameraEnd.y;
+      itVisualY = itTargetY;
+      itVisualState.y = itVisualY;
+      renderItSignals(1);
+    }
     else {
       avInputEnabled = false;
       avTargetY = avJourney.cameraEnd.y;
@@ -1040,6 +1128,8 @@
       });
     }
     activeRoute = "howEntry";
+    updateDcIntroVisibility();
+    updateItIntroVisibility();
     updateAvIntroVisibility();
     document.body.classList.remove("route-data-center", "route-it", "route-av");
     document.body.classList.add(
@@ -1071,13 +1161,29 @@
     document.body.classList.remove("route-how-entry", "how-source-dc", "how-source-it", "how-source-av");
     document.body.classList.add(routeClass(source));
     if (source === "dataCenter") {
+      if (dcMoveFrame) {
+        window.cancelAnimationFrame(dcMoveFrame);
+        dcMoveFrame = 0;
+      }
+      window.gsap.killTweensOf(dcVisualState);
       dcTargetY = dcJourney.cameraEnd.y;
-      renderDcSignals(1);
+      dcVisualY = dcTargetY;
+      dcVisualState.y = dcVisualY;
+      renderDcSignals(dcVisualProgress());
       dcInputEnabled = true;
+      updateDcIntroVisibility();
     } else if (source === "it") {
+      if (itMoveFrame) {
+        window.cancelAnimationFrame(itMoveFrame);
+        itMoveFrame = 0;
+      }
+      window.gsap.killTweensOf(itVisualState);
       itTargetY = itJourney.cameraEnd.y;
-      renderItSignals(1);
+      itVisualY = itTargetY;
+      itVisualState.y = itVisualY;
+      renderItSignals(itVisualProgress());
       itInputEnabled = true;
+      updateItIntroVisibility();
     } else {
       avTargetY = avJourney.cameraEnd.y;
       avVisualY = avTargetY;
@@ -1288,7 +1394,27 @@
     var runtime = window.SPACES_RUNTIME;
     var px = clamp(deltaPixels, -90, 90);
     if (px < 0 && journeyTargetDistance <= 0.001) { startHowWorkReverseTransition(); return; }
-    journeyTargetDistance = clamp(journeyTargetDistance + (px / runtime.getPxPerUnit()) * 1.00, 0, continuousJourneyLength);
+    var inputDistance = px / runtime.getPxPerUnit();
+    var handoverDistance = continuousAnchorDistances[continuousAnchorDistances.length - 1];
+    if (inputDistance > 0 && journeyTargetDistance < handoverDistance) {
+      var forwardToHandover = (handoverDistance - journeyTargetDistance) / 1.25;
+      journeyTargetDistance = inputDistance <= forwardToHandover
+        ? journeyTargetDistance + inputDistance * 1.25
+        : handoverDistance + inputDistance - forwardToHandover;
+    } else if (inputDistance < 0 && journeyTargetDistance > handoverDistance) {
+      var reverseToHandover = journeyTargetDistance - handoverDistance;
+      journeyTargetDistance = -inputDistance <= reverseToHandover
+        ? journeyTargetDistance + inputDistance
+        : handoverDistance + (inputDistance + reverseToHandover) * 1.25;
+    } else {
+      journeyTargetDistance += inputDistance * (
+        journeyTargetDistance < handoverDistance ||
+        (journeyTargetDistance === handoverDistance && inputDistance < 0)
+          ? 1.25
+          : 1.00
+      );
+    }
+    journeyTargetDistance = clamp(journeyTargetDistance, 0, continuousJourneyLength);
     if (journeyVisualTween) journeyVisualTween.kill();
     var state = { d: journeyVisualDistance };
     journeyVisualTween = window.gsap.to(state, { d: journeyTargetDistance, duration: 0.42, ease: "power2.out", overwrite: true,
@@ -1356,37 +1482,121 @@
     renderDownstream(distance);
   }
 
+  function scheduleDcCameraMove() {
+    if (dcMoveFrame) return;
+    dcMoveFrame = window.requestAnimationFrame(function () {
+      var runtime = window.SPACES_RUNTIME;
+      var targetY = dcTargetY;
+      dcMoveFrame = 0;
+      if (!runtime || !dcInputEnabled || dcReturning) return;
+      runtime.moveCameraTo({ x: 1940, y: targetY }, 0.42, "power2.out");
+      dcVisualState.y = dcVisualY;
+      window.gsap.to(dcVisualState, {
+        y: targetY,
+        duration: 0.42,
+        ease: "power2.out",
+        overwrite: true,
+        onUpdate: function () {
+          dcVisualY = dcVisualState.y;
+          renderDcSignals(dcVisualProgress());
+        }
+      });
+    });
+  }
+
   function moveDcCamera(deltaPixels, allowHowEntry) {
     var runtime = window.SPACES_RUNTIME;
     if (!dcInputEnabled || dcReturning || !runtime) return;
 
-    if (allowHowEntry && dcProgress() >= 0.995 && deltaPixels > 12) {
-      enterHowEntry("dataCenter");
+    if (
+      allowHowEntry &&
+      dcTargetY >= dcJourney.cameraEnd.y - 0.5 &&
+      deltaPixels > 12
+    ) {
+      if (Math.abs(dcVisualY - dcJourney.cameraEnd.y) > 1) return;
+      if (dcMoveFrame) {
+        window.cancelAnimationFrame(dcMoveFrame);
+        dcMoveFrame = 0;
+      }
+      window.gsap.killTweensOf(dcVisualState);
+      dcTargetY = dcJourney.cameraEnd.y;
+      dcVisualY = dcTargetY;
+      dcVisualState.y = dcVisualY;
+      renderDcSignals(1);
+      runtime.moveCameraTo(
+        { x: 1940, y: dcJourney.cameraEnd.y },
+        0,
+        "none",
+        function () { enterHowEntry("dataCenter"); }
+      );
       return;
     }
+    deltaPixels = clamp(deltaPixels, -90, 90);
     dcTargetY = clamp(
-      dcTargetY + (deltaPixels / runtime.getPxPerUnit()) * 0.82,
-      dcJourney.cameraStart.y,
+      dcTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.25,
+      dcIntroStop().y,
       dcJourney.cameraEnd.y
     );
-    renderDcSignals(dcProgress());
-    runtime.moveCameraTo({ x: 1960, y: dcTargetY }, 0.34, "power2.out");
+    updateDcIntroVisibility();
+    scheduleDcCameraMove();
+  }
+
+  function scheduleItCameraMove() {
+    if (itMoveFrame) return;
+    itMoveFrame = window.requestAnimationFrame(function () {
+      var runtime = window.SPACES_RUNTIME;
+      var targetY = itTargetY;
+      itMoveFrame = 0;
+      if (!runtime || !itInputEnabled || itReturning) return;
+      runtime.moveCameraTo({ x: 1140, y: targetY }, 0.42, "power2.out");
+      itVisualState.y = itVisualY;
+      window.gsap.to(itVisualState, {
+        y: targetY,
+        duration: 0.42,
+        ease: "power2.out",
+        overwrite: true,
+        onUpdate: function () {
+          itVisualY = itVisualState.y;
+          renderItSignals(itVisualProgress());
+        }
+      });
+    });
   }
 
   function moveItCamera(deltaPixels, allowHowEntry) {
     var runtime = window.SPACES_RUNTIME;
     if (!itInputEnabled || itReturning || !runtime) return;
-    if (allowHowEntry && itProgress() >= 0.995 && deltaPixels > 12) {
-      enterHowEntry("it");
+    if (
+      allowHowEntry &&
+      itTargetY >= itJourney.cameraEnd.y - 0.5 &&
+      deltaPixels > 12
+    ) {
+      if (Math.abs(itVisualY - itJourney.cameraEnd.y) > 1) return;
+      if (itMoveFrame) {
+        window.cancelAnimationFrame(itMoveFrame);
+        itMoveFrame = 0;
+      }
+      window.gsap.killTweensOf(itVisualState);
+      itTargetY = itJourney.cameraEnd.y;
+      itVisualY = itTargetY;
+      itVisualState.y = itVisualY;
+      renderItSignals(1);
+      runtime.moveCameraTo(
+        { x: 1140, y: itJourney.cameraEnd.y },
+        0,
+        "none",
+        function () { enterHowEntry("it"); }
+      );
       return;
     }
+    deltaPixels = clamp(deltaPixels, -90, 90);
     itTargetY = clamp(
-      itTargetY + (deltaPixels / runtime.getPxPerUnit()) * 0.82,
-      itJourney.cameraStart.y,
+      itTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.25,
+      itIntroStop().y,
       itJourney.cameraEnd.y
     );
-    renderItSignals(itProgress());
-    runtime.moveCameraTo({ x: 1160, y: itTargetY }, 0.34, "power2.out");
+    updateItIntroVisibility();
+    scheduleItCameraMove();
   }
 
   function scheduleAvCameraMove() {
@@ -1420,7 +1630,7 @@
     }
     deltaPixels = clamp(deltaPixels, -90, 90);
     avTargetY = clamp(
-      avTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.00,
+      avTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.25,
       avIntroStop().y,
       avJourney.cameraEnd.y
     );
@@ -1435,8 +1645,8 @@
     if (activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork") return;
     event.preventDefault();
     if (howTransitioning) return;
-    if (activeRoute === "dataCenter") moveDcCamera(event.deltaY, true);
-    else if (activeRoute === "it") moveItCamera(event.deltaY, true);
+    if (activeRoute === "dataCenter") moveDcCamera(wheelPixels(event), true);
+    else if (activeRoute === "it") moveItCamera(wheelPixels(event), true);
     else if (activeRoute === "av") {
       var avDeltaPixels = event.deltaMode === 1
         ? event.deltaY * 16
@@ -1520,13 +1730,17 @@
       definition.ease,
       function () {
         if (route === "dataCenter") {
-          dcTargetY = dcJourney.cameraStart.y;
+          dcTargetY = dcIntroStop().y;
+          dcVisualY = dcTargetY;
+          dcVisualState.y = dcVisualY;
           dcInputEnabled = true;
-          renderDcSignals(0);
+          renderDcSignals(dcVisualProgress());
         } else if (route === "it") {
-          itTargetY = itJourney.cameraStart.y;
+          itTargetY = itIntroStop().y;
+          itVisualY = itTargetY;
+          itVisualState.y = itVisualY;
           itInputEnabled = true;
-          renderItSignals(0);
+          renderItSignals(itVisualProgress());
         } else if (route === "av") {
           avTargetY = avIntroStop().y;
           avVisualY = avTargetY;
@@ -1534,6 +1748,8 @@
           avInputEnabled = true;
           renderAvSignals(avVisualProgress());
         }
+        updateDcIntroVisibility();
+        updateItIntroVisibility();
         updateAvIntroVisibility();
         var back = route === "dataCenter"
           ? document.querySelector("[data-dc-back-fixed]")
@@ -1563,6 +1779,8 @@
           "route-how-entry",
           "route-how-work",
           "route-how-transition",
+          "at-dc-intro",
+          "at-it-intro",
           "how-source-dc",
           "how-source-it",
           "how-source-av"
@@ -1570,10 +1788,18 @@
         activeRoute = "hub";
         dcReturning = false;
         dcInputEnabled = false;
+        updateDcIntroVisibility();
         itReturning = false;
         itInputEnabled = false;
-        itTargetY = itJourney ? itJourney.cameraStart.y : 2030;
-        if (itJourney) renderItSignals(0);
+        updateItIntroVisibility();
+        itTargetY = itJourney ? itIntroStop().y : 1840;
+        itVisualY = itTargetY;
+        itVisualState.y = itVisualY;
+        if (itMoveFrame) {
+          window.cancelAnimationFrame(itMoveFrame);
+          itMoveFrame = 0;
+        }
+        if (itJourney) renderItSignals(itVisualProgress());
         avReturning = false;
         avInputEnabled = false;
         updateAvIntroVisibility();
@@ -1613,8 +1839,14 @@
         clearHowTransitionOpacity();
         if (howJourney) renderHowJourney(0);
         howSource = null;
-        dcTargetY = dcJourney ? dcJourney.cameraStart.y : 1530;
-        if (dcJourney) renderDcSignals(0);
+        dcTargetY = dcJourney ? dcIntroStop().y : 1340;
+        dcVisualY = dcTargetY;
+        dcVisualState.y = dcVisualY;
+        if (dcMoveFrame) {
+          window.cancelAnimationFrame(dcMoveFrame);
+          dcMoveFrame = 0;
+        }
+        if (dcJourney) renderDcSignals(dcVisualProgress());
         unlockScroll();
         updateHubReady();
         var control = document.querySelector(
@@ -1664,17 +1896,28 @@
     if (returningRoute === "it") {
       itInputEnabled = false;
       itReturning = true;
+      updateItIntroVisibility();
       var itDuration = 0.55 + itProgress() * 0.65;
-      itRuns.forEach(function (group) {
-        window.gsap.to(group.runs.map(function (run) { return run.element; }), {
-          strokeDashoffset: function (index) { return group.runs[index].length; },
-          duration: Math.min(0.42, itDuration),
-          ease: "power2.inOut",
-          overwrite: true
-        });
+      if (itMoveFrame) {
+        window.cancelAnimationFrame(itMoveFrame);
+        itMoveFrame = 0;
+      }
+      itVisualState.y = itVisualY;
+      window.gsap.to(itVisualState, {
+        y: itIntroStop().y,
+        duration: itDuration,
+        ease: "power3.inOut",
+        overwrite: true,
+        onUpdate: function () {
+          itVisualY = itVisualState.y;
+          renderItSignals(itVisualProgress());
+        }
       });
-      runtime.moveCameraTo(itJourney.cameraStart, itDuration, "power3.inOut", function () {
-        itTargetY = itJourney.cameraStart.y;
+      runtime.moveCameraTo(itIntroStop(), itDuration, "power3.inOut", function () {
+        itTargetY = itIntroStop().y;
+        itVisualY = itTargetY;
+        itVisualState.y = itVisualY;
+        renderItSignals(itVisualProgress());
         completeReturnToHub(returningRoute);
       });
       return;
@@ -1682,27 +1925,30 @@
 
     dcInputEnabled = false;
     dcReturning = true;
-    var progress = dcProgress();
-    var duration = 0.55 + progress * 0.65;
-
-    dcRuns.forEach(function (group) {
-      window.gsap.to(group.runs.map(function (run) { return run.element; }), {
-        strokeDashoffset: function (index) { return group.runs[index].length; },
-        duration: Math.min(0.42, duration),
-        ease: "power2.inOut",
-        overwrite: true
-      });
-    });
-
-    runtime.moveCameraTo(
-      dcJourney.cameraStart,
-      duration,
-      "power3.inOut",
-      function () {
-        dcTargetY = dcJourney.cameraStart.y;
-        completeReturnToHub(returningRoute);
+    updateDcIntroVisibility();
+    var dcDuration = 0.55 + dcProgress() * 0.65;
+    if (dcMoveFrame) {
+      window.cancelAnimationFrame(dcMoveFrame);
+      dcMoveFrame = 0;
+    }
+    dcVisualState.y = dcVisualY;
+    window.gsap.to(dcVisualState, {
+      y: dcIntroStop().y,
+      duration: dcDuration,
+      ease: "power3.inOut",
+      overwrite: true,
+      onUpdate: function () {
+        dcVisualY = dcVisualState.y;
+        renderDcSignals(dcVisualProgress());
       }
-    );
+    });
+    runtime.moveCameraTo(dcIntroStop(), dcDuration, "power3.inOut", function () {
+      dcTargetY = dcIntroStop().y;
+      dcVisualY = dcTargetY;
+      dcVisualState.y = dcVisualY;
+      renderDcSignals(dcVisualProgress());
+      completeReturnToHub(returningRoute);
+    });
   }
 
   function init() {
