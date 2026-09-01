@@ -14,7 +14,7 @@ window.SPACES_HOME = {
 
   world: {
     w: 2340,
-    h: 7580
+    h: 6220
   },
 
   scroll: {
@@ -233,24 +233,6 @@ window.SPACES_HOME = {
       y: 5020,
       w: 2340,
       h: 1200
-    },
-
-    whySpaces: {
-      key: "why-spaces",
-      type: "dark",
-      x: 0,
-      y: 6220,
-      w: 2340,
-      h: 1000
-    },
-
-    finalCta: {
-      key: "final-cta",
-      type: "dark",
-      x: 0,
-      y: 7220,
-      w: 2340,
-      h: 360
     }
   },
 
@@ -428,16 +410,16 @@ window.SPACES_HOME = {
         { path: "M 1460 5870 H 960", duration: 1.10 }
       ],
       stageSignalFractions: [
-        0.0539758,
-        0.1776412,
-        0.3606895,
-        0.5430242,
-        0.7793347,
-        0.9037137
+        0.059728182,
+        0.196567057,
+        0.399118196,
+        0.600881636,
+        0.862369098,
+        1.000000000
       ],
       continuousSignal: {
         key: "how-signal-continuous",
-        d: "M 1160 5220 V 5358 Q 1160 5400 1202 5400 H 1918 Q 1960 5400 1960 5442 V 5918 Q 1960 5960 1918 5960 H 1142 Q 1100 5960 1100 6002 V 6180",
+        d: "M 1160 5220 V 5358 Q 1160 5400 1202 5400 H 1918 Q 1960 5400 1960 5442 V 5918 Q 1960 5960 1918 5960 H 1142",
         windows: [
           { from: 0.02, to: 0.20 },
           { from: 0.20, to: 0.34 },
@@ -448,49 +430,16 @@ window.SPACES_HOME = {
         ],
         distanceAnchors: [
           { progress: 0.02, fraction: 0.000000000 },
-          { progress: 0.20, fraction: 0.080641183 },
-          { progress: 0.34, fraction: 0.197197597 },
-          { progress: 0.49, fraction: 0.387354874 },
-          { progress: 0.67, fraction: 0.539112891 },
-          { progress: 0.86, fraction: 0.763689512 },
-          { progress: 0.96, fraction: 0.930379054 },
+          { progress: 0.20, fraction: 0.089235384 },
+          { progress: 0.34, fraction: 0.218213606 },
+          { progress: 0.49, fraction: 0.428636582 },
+          { progress: 0.67, fraction: 0.596567960 },
+          { progress: 0.86, fraction: 0.845078464 },
+          { progress: 0.96, fraction: 1.000000000 },
           { progress: 1.00, fraction: 1.000000000 }
         ]
       },
-      continuation: { x: 1100, y: 6180 }
-    },
-    whySpaces: {
-      cameraStart: { x: 960, y: 5870 },
-      cameraEnd: { x: 1160, y: 6970 },
-      cameraPath: "M 960 5870 L 960 6313 Q 960 6355 1002 6355 L 1160 6355 L 1160 6970",
-      cameraStops: [
-        { key: "entry", x: 960, y: 5870 },
-        { key: "intro", x: 1160, y: 6455 },
-        { key: "proof", x: 1160, y: 6755 },
-        { key: "exit", x: 1160, y: 6970 }
-      ],
-      signal: {
-        key: "why-signal-continuous",
-        d: "M 1100 6370 L 1100 6600 C 1100 6640 1135 6660 1180 6660 C 1220 6660 1240 6690 1240 6720 C 1240 6750 1215 6775 1170 6790 C 1135 6802 1120 6825 1120 6855 C 1120 6885 1145 6905 1190 6915 C 1235 6925 1260 6950 1260 6980 C 1260 7010 1235 7030 1190 7040 C 1145 7050 1120 7075 1120 7105 C 1120 7135 1145 7155 1190 7165 C 1235 7175 1250 7200 1230 7225 C 1215 7245 1185 7260 1160 7280 L 1160 7420",
-        start: { x: 1100, y: 6180 },
-        end: { x: 1160, y: 7230 }
-      },
-      continuation: { x: 1160, y: 7230 }
-    },
-    finalCta: {
-      cameraStart: { x: 1160, y: 6970 },
-      cameraEnd: { x: 1160, y: 7440 },
-      cameraPath: "M 1160 6970 L 1160 7440",
-      cameraStops: [
-        { key: "entry", x: 1160, y: 6970 },
-        { key: "cta", x: 1160, y: 7440 }
-      ],
-      signal: {
-        key: "cta-signal-continuous",
-        d: "M 1160 7420 L 1160 7460 C 1160 7482 1175 7500 1200 7510",
-        start: { x: 1160, y: 7230 },
-        end: { x: 1200, y: 7320 }
-      }
+      continuation: { x: 1142, y: 5960 }
     }
   },
 

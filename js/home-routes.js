@@ -85,30 +85,6 @@
   var howFutureStageElements = [];
   var HOW_TRANSITION_DURATION = 1.10;
   var HOW_TRANSITION_THRESHOLD = 18;
-  var whyJourney = null;
-  var whyJourneyPath = null;
-  var whyPathLength = 0;
-  var whyTargetDistance = 0;
-  var whyRenderedDistance = 0;
-  var whyRenderState = { distance: 0 };
-  var whyRenderTween = null;
-  var whyProgress = 0;
-  var whySignalRuns = [];
-  var whySignalLength = 0;
-  var whyInputEnabled = false;
-  var whyReturning = false;
-  var ctaJourney = null;
-  var ctaJourneyPath = null;
-  var ctaPathLength = 0;
-  var ctaTargetDistance = 0;
-  var ctaRenderedDistance = 0;
-  var ctaRenderState = { distance: 0 };
-  var ctaRenderTween = null;
-  var ctaProgress = 0;
-  var ctaSignalRuns = [];
-  var ctaSignalLength = 0;
-  var ctaInputEnabled = false;
-  var ctaReturning = false;
   var touchY = null;
 
   function desktopAllowed() {
@@ -745,110 +721,6 @@
     });
   }
 
-  function renderWhyJourney(progress) {
-    whyProgress = clamp(progress, 0, 1);
-    var revealDistance = 0;
-    if (whyProgress >= 0.98) {
-      revealDistance = whySignalLength;
-    } else if (whyProgress > 0.02) {
-      var q = (whyProgress - 0.02) / 0.96;
-      q = clamp(q, 0, 1);
-      q = q * q * (3 - 2 * q);
-      revealDistance = whySignalLength * q;
-    }
-    whySignalRuns.forEach(function (run) {
-      run.element.style.strokeDashoffset = String(run.length - revealDistance);
-    });
-  }
-
-  function killWhyRenderTween() {
-    if (whyRenderTween) {
-      whyRenderTween.kill();
-      whyRenderTween = null;
-    }
-  }
-
-  function renderWhyDistance() {
-    var runtime = window.SPACES_RUNTIME;
-    whyRenderedDistance = clamp(whyRenderState.distance, 0, whyPathLength);
-    whyRenderState.distance = whyRenderedDistance;
-    renderWhyJourney(
-      whyPathLength === 0 ? 0 : whyRenderedDistance / whyPathLength
-    );
-    runtime.moveCameraTo(
-      whyJourneyPath.element.getPointAtLength(whyRenderedDistance),
-      0,
-      "none"
-    );
-  }
-
-  function tweenWhyRenderedDistance() {
-    killWhyRenderTween();
-    whyRenderTween = window.gsap.to(whyRenderState, {
-      distance: whyTargetDistance,
-      duration: 0.34,
-      ease: "power2.out",
-      overwrite: true,
-      onUpdate: renderWhyDistance,
-      onComplete: function () {
-        whyRenderTween = null;
-        renderWhyDistance();
-      }
-    });
-  }
-
-  function renderCtaJourney(progress) {
-    ctaProgress = clamp(progress, 0, 1);
-    var revealDistance = 0;
-    if (ctaProgress >= 0.62) {
-      revealDistance = ctaSignalLength;
-    } else if (ctaProgress > 0.08) {
-      var q = (ctaProgress - 0.08) / 0.54;
-      q = clamp(q, 0, 1);
-      q = q * q * (3 - 2 * q);
-      revealDistance = ctaSignalLength * q;
-    }
-    ctaSignalRuns.forEach(function (run) {
-      run.element.style.strokeDashoffset = String(run.length - revealDistance);
-    });
-  }
-
-  function killCtaRenderTween() {
-    if (ctaRenderTween) {
-      ctaRenderTween.kill();
-      ctaRenderTween = null;
-    }
-  }
-
-  function renderCtaDistance() {
-    var runtime = window.SPACES_RUNTIME;
-    ctaRenderedDistance = clamp(ctaRenderState.distance, 0, ctaPathLength);
-    ctaRenderState.distance = ctaRenderedDistance;
-    renderCtaJourney(
-      ctaPathLength === 0 ? 0 : ctaRenderedDistance / ctaPathLength
-    );
-    runtime.moveCameraTo(
-      ctaJourneyPath.element.getPointAtLength(ctaRenderedDistance),
-      0,
-      "none"
-    );
-  }
-
-  function tweenCtaRenderedDistance() {
-    killCtaRenderTween();
-    ctaRenderTween = window.gsap.to(ctaRenderState, {
-      distance: ctaTargetDistance,
-      duration: 0.34,
-      ease: "power2.out",
-      overwrite: true,
-      onUpdate: renderCtaDistance,
-      onComplete: function () {
-        ctaRenderTween = null;
-        renderCtaDistance();
-      }
-    });
-  }
-
   function bindHowJourney() {
     howJourney = DATA.branchJourneys && DATA.branchJourneys.howWork;
     if (!howJourney) return;
@@ -878,44 +750,6 @@
       ? distanceAtPoint(howJourneyPath, qualification)
       : 0;
     renderHowJourney(0);
-  }
-
-  function bindWhyJourney() {
-    whyJourney = DATA.branchJourneys && DATA.branchJourneys.whySpaces;
-    if (!whyJourney) return;
-    whyJourneyPath = createSampledPath(whyJourney.cameraPath);
-    whyPathLength = whyJourneyPath.length;
-    whySignalRuns = Array.prototype.slice.call(
-      document.querySelectorAll(
-        '[data-why-signal="' + whyJourney.signal.key + '"] path'
-      )
-    ).map(function (path) {
-      var length = path.getTotalLength();
-      path.style.strokeDasharray = String(length);
-      path.style.strokeDashoffset = String(length);
-      return { element: path, length: length };
-    });
-    whySignalLength = whySignalRuns.length ? whySignalRuns[0].length : 0;
-    renderWhyJourney(0);
-  }
-
-  function bindCtaJourney() {
-    ctaJourney = DATA.branchJourneys && DATA.branchJourneys.finalCta;
-    if (!ctaJourney) return;
-    ctaJourneyPath = createSampledPath(ctaJourney.cameraPath);
-    ctaPathLength = ctaJourneyPath.length;
-    ctaSignalRuns = Array.prototype.slice.call(
-      document.querySelectorAll(
-        '[data-cta-signal="' + ctaJourney.signal.key + '"] path'
-      )
-    ).map(function (path) {
-      var length = path.getTotalLength();
-      path.style.strokeDasharray = String(length);
-      path.style.strokeDashoffset = String(length);
-      return { element: path, length: length };
-    });
-    ctaSignalLength = ctaSignalRuns.length ? ctaSignalRuns[0].length : 0;
-    renderCtaJourney(0);
   }
 
   function tweenRuns(runs, reveal, duration, onComplete) {
@@ -1219,8 +1053,11 @@
       howWorkBackAccum = 0;
       howWorkForwardAccum += deltaPixels;
       if (howWorkForwardAccum < HOW_TRANSITION_THRESHOLD) return;
-      if (howStageIndex === 5) activateWhyJourney();
-      else startHowStageTransition(howStageIndex + 1);
+      if (howStageIndex === 5) {
+        howWorkForwardAccum = 0;
+        return;
+      }
+      startHowStageTransition(howStageIndex + 1);
     } else if (deltaPixels < 0) {
       howWorkForwardAccum = 0;
       howWorkBackAccum += -deltaPixels;
@@ -1228,202 +1065,6 @@
       if (howStageIndex === 0) startHowWorkReverseTransition();
       else startHowStageTransition(howStageIndex - 1);
     }
-  }
-
-  function activateWhyJourney() {
-    if (!howWorkInputEnabled || howWorkReturning || !whyJourneyPath) return;
-    killHowRenderTween();
-    howTargetDistance = howPathLength;
-    howRenderedDistance = howPathLength;
-    howRenderState.distance = howPathLength;
-    renderHowJourney(1);
-    settleHowStage(5);
-    howWorkInputEnabled = false;
-    killWhyRenderTween();
-    whyTargetDistance = 0;
-    whyRenderedDistance = 0;
-    whyRenderState.distance = 0;
-    renderWhyJourney(0);
-    whyInputEnabled = true;
-    whyReturning = false;
-    activeRoute = "whySpaces";
-    document.body.classList.remove("route-how-work");
-    document.body.classList.add("route-why-spaces");
-  }
-
-  function restoreHowHandover() {
-    var runtime = window.SPACES_RUNTIME;
-    killWhyRenderTween();
-    whyTargetDistance = 0;
-    whyRenderedDistance = 0;
-    whyRenderState.distance = 0;
-    whyProgress = 0;
-    renderWhyJourney(0);
-    whyInputEnabled = false;
-    whyReturning = false;
-    howTargetDistance = howPathLength;
-    howRenderedDistance = howPathLength;
-    howRenderState.distance = howPathLength;
-    renderHowJourney(1);
-    settleHowStage(5);
-    howWorkInputEnabled = true;
-    howWorkReturning = false;
-    activeRoute = "howWork";
-    document.body.classList.remove("route-why-spaces");
-    document.body.classList.add("route-how-work");
-    runtime.moveCameraTo(whyJourney.cameraStart, 0, "none");
-  }
-
-  function moveWhyJourney(deltaPixels) {
-    var runtime = window.SPACES_RUNTIME;
-    if (!whyInputEnabled || whyReturning || !runtime || !whyJourneyPath) return;
-    if (whyProgress >= 0.999 && deltaPixels > 12) {
-      activateFinalCtaJourney();
-      return;
-    }
-    if (
-      whyTargetDistance <= 0 &&
-      whyRenderedDistance <= 0.5 &&
-      deltaPixels < -12
-    ) {
-      restoreHowHandover();
-      return;
-    }
-    if (whyTargetDistance >= whyPathLength && deltaPixels > 0) return;
-    var nextTargetDistance = clamp(
-      whyTargetDistance + (deltaPixels / runtime.getPxPerUnit()) * 0.82,
-      0,
-      whyPathLength
-    );
-    if (nextTargetDistance === whyTargetDistance) return;
-    whyTargetDistance = nextTargetDistance;
-    tweenWhyRenderedDistance();
-  }
-
-  function activateFinalCtaJourney() {
-    if (!whyInputEnabled || whyReturning || !ctaJourneyPath) return;
-    killWhyRenderTween();
-    whyTargetDistance = whyPathLength;
-    whyRenderedDistance = whyPathLength;
-    whyRenderState.distance = whyPathLength;
-    renderWhyJourney(1);
-    whyInputEnabled = false;
-    killCtaRenderTween();
-    ctaTargetDistance = 0;
-    ctaRenderedDistance = 0;
-    ctaRenderState.distance = 0;
-    renderCtaJourney(0);
-    ctaInputEnabled = true;
-    ctaReturning = false;
-    activeRoute = "finalCta";
-    document.body.classList.remove("route-why-spaces");
-    document.body.classList.add("route-final-cta");
-  }
-
-  function restoreWhyExit() {
-    var runtime = window.SPACES_RUNTIME;
-    killCtaRenderTween();
-    ctaTargetDistance = 0;
-    ctaRenderedDistance = 0;
-    ctaRenderState.distance = 0;
-    ctaProgress = 0;
-    renderCtaJourney(0);
-    ctaInputEnabled = false;
-    ctaReturning = false;
-    whyTargetDistance = whyPathLength;
-    whyRenderedDistance = whyPathLength;
-    whyRenderState.distance = whyPathLength;
-    renderWhyJourney(1);
-    whyInputEnabled = true;
-    whyReturning = false;
-    activeRoute = "whySpaces";
-    document.body.classList.remove("route-final-cta");
-    document.body.classList.add("route-why-spaces");
-    runtime.moveCameraTo(ctaJourney.cameraStart, 0, "none");
-  }
-
-  function moveCtaJourney(deltaPixels) {
-    var runtime = window.SPACES_RUNTIME;
-    if (!ctaInputEnabled || ctaReturning || !runtime || !ctaJourneyPath) return;
-    if (
-      ctaTargetDistance <= 0 &&
-      ctaRenderedDistance <= 0.5 &&
-      deltaPixels < -12
-    ) {
-      restoreWhyExit();
-      return;
-    }
-    if (ctaTargetDistance >= ctaPathLength && deltaPixels > 0) return;
-    var nextTargetDistance = clamp(
-      ctaTargetDistance + (deltaPixels / runtime.getPxPerUnit()) * 0.82,
-      0,
-      ctaPathLength
-    );
-    if (nextTargetDistance === ctaTargetDistance) return;
-    ctaTargetDistance = nextTargetDistance;
-    tweenCtaRenderedDistance();
-  }
-
-  function rewindCtaJourneyToWhy(onComplete) {
-    var runtime = window.SPACES_RUNTIME;
-    killCtaRenderTween();
-    ctaTargetDistance = ctaRenderedDistance;
-    ctaRenderState.distance = ctaRenderedDistance;
-    var state = { distance: ctaRenderedDistance };
-    var duration = 0.40 + ctaProgress * 0.45;
-    ctaInputEnabled = false;
-    ctaReturning = true;
-    window.gsap.to(state, {
-      distance: 0,
-      duration: duration,
-      ease: "power3.inOut",
-      onUpdate: function () {
-        ctaTargetDistance = state.distance;
-        ctaRenderedDistance = state.distance;
-        ctaRenderState.distance = state.distance;
-        renderCtaJourney(ctaRenderedDistance / ctaPathLength);
-        runtime.moveCameraTo(
-          ctaJourneyPath.element.getPointAtLength(ctaRenderedDistance),
-          0,
-          "none"
-        );
-      },
-      onComplete: function () {
-        restoreWhyExit();
-        if (onComplete) onComplete();
-      }
-    });
-  }
-
-  function rewindWhyJourneyToHandover(onComplete) {
-    var runtime = window.SPACES_RUNTIME;
-    killWhyRenderTween();
-    whyTargetDistance = whyRenderedDistance;
-    whyRenderState.distance = whyRenderedDistance;
-    var state = { distance: whyRenderedDistance };
-    var duration = 0.45 + whyProgress * 0.55;
-    whyInputEnabled = false;
-    whyReturning = true;
-    window.gsap.to(state, {
-      distance: 0,
-      duration: duration,
-      ease: "power3.inOut",
-      onUpdate: function () {
-        whyTargetDistance = state.distance;
-        whyRenderedDistance = state.distance;
-        whyRenderState.distance = state.distance;
-        renderWhyJourney(whyRenderedDistance / whyPathLength);
-        runtime.moveCameraTo(
-          whyJourneyPath.element.getPointAtLength(whyRenderedDistance),
-          0,
-          "none"
-        );
-      },
-      onComplete: function () {
-        restoreHowHandover();
-        if (onComplete) onComplete();
-      }
-    });
   }
 
   function rewindHowJourneyToEntry(onComplete) {
@@ -1470,11 +1111,7 @@
   }
 
   function handleHowBack() {
-    if (activeRoute === "finalCta") {
-      rewindCtaJourneyToWhy(handleHowBack);
-    } else if (activeRoute === "whySpaces") {
-      rewindWhyJourneyToHandover(handleHowBack);
-    } else if (activeRoute === "howWork") {
+    if (activeRoute === "howWork") {
       rewindHowJourneyToEntry(function () { leaveHowEntry(true); });
     } else if (activeRoute === "howEntry") {
       leaveHowEntry(true);
@@ -1556,7 +1193,7 @@
     if (activeRoute === "hub") {
       return;
     }
-    if (activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork" && activeRoute !== "whySpaces" && activeRoute !== "finalCta") return;
+    if (activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork") return;
     event.preventDefault();
     if (howTransitioning) return;
     if (activeRoute === "dataCenter") moveDcCamera(event.deltaY, true);
@@ -1573,8 +1210,6 @@
       var stageWheelPixels = wheelPixels(event);
       if (!consumeHowWheelMomentum()) moveHowJourney(stageWheelPixels);
     }
-    else if (activeRoute === "whySpaces") moveWhyJourney(event.deltaY);
-    else if (activeRoute === "finalCta") moveCtaJourney(event.deltaY);
     else if (howInputEnabled) {
       var howPixels = wheelPixels(event);
       if (howPixels > 0) {
@@ -1590,13 +1225,13 @@
   }
 
   function onTouchStart(event) {
-    if ((activeRoute === "dataCenter" || activeRoute === "it" || activeRoute === "av" || activeRoute === "howEntry" || activeRoute === "howWork" || activeRoute === "whySpaces" || activeRoute === "finalCta") && event.touches.length) {
+    if ((activeRoute === "dataCenter" || activeRoute === "it" || activeRoute === "av" || activeRoute === "howEntry" || activeRoute === "howWork") && event.touches.length) {
       touchY = event.touches[0].clientY;
     }
   }
 
   function onTouchMove(event) {
-    if ((activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork" && activeRoute !== "whySpaces" && activeRoute !== "finalCta") || touchY === null || !event.touches.length) return;
+    if ((activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork") || touchY === null || !event.touches.length) return;
     event.preventDefault();
     var nextY = event.touches[0].clientY;
     if (activeRoute === "dataCenter") moveDcCamera(touchY - nextY, false);
@@ -1615,8 +1250,6 @@
     else if (activeRoute === "howWork") {
       if (!howTouchAwaitingRelease) moveHowJourney(touchY - nextY);
     }
-    else if (activeRoute === "whySpaces") moveWhyJourney(touchY - nextY);
-    else moveCtaJourney(touchY - nextY);
     touchY = nextY;
   }
 
@@ -1690,8 +1323,6 @@
           "route-how-entry",
           "route-how-work",
           "route-how-transition",
-          "route-why-spaces",
-          "route-final-cta",
           "how-source-dc",
           "how-source-it",
           "how-source-av"
@@ -1740,22 +1371,6 @@
         }
         clearHowTransitionOpacity();
         if (howJourney) renderHowJourney(0);
-        killWhyRenderTween();
-        whyTargetDistance = 0;
-        whyRenderedDistance = 0;
-        whyRenderState.distance = 0;
-        whyProgress = 0;
-        whyInputEnabled = false;
-        whyReturning = false;
-        if (whyJourney) renderWhyJourney(0);
-        killCtaRenderTween();
-        ctaTargetDistance = 0;
-        ctaRenderedDistance = 0;
-        ctaRenderState.distance = 0;
-        ctaProgress = 0;
-        ctaInputEnabled = false;
-        ctaReturning = false;
-        if (ctaJourney) renderCtaJourney(0);
         howSource = null;
         dcTargetY = dcJourney ? dcJourney.cameraStart.y : 1530;
         if (dcJourney) renderDcSignals(0);
@@ -1863,8 +1478,6 @@
     bindHowTransitionElements();
     bindHowEntry();
     bindHowJourney();
-    bindWhyJourney();
-    bindCtaJourney();
     setControlsReady(false);
 
     controls.forEach(function (control) {
