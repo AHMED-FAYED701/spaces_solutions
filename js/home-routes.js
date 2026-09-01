@@ -86,20 +86,11 @@
   var HOW_TRANSITION_DURATION = 1.10;
   var HOW_TRANSITION_THRESHOLD = 18;
   var touchY = null;
-  var downstreamJourney = null;
-  var downstreamPaths = [];
-  var downstreamRuns = [];
-  var downstreamLength = 0;
-  var downstreamIndex = -1;
-  var downstreamTransitioning = false;
-  var downstreamForwardAccum = 0;
-  var downstreamBackAccum = 0;
-  var downstreamElements = {};
   var journeyTargetDistance = 0;
   var journeyVisualDistance = 0;
   var continuousJourneyPath = null;
   var continuousJourneyLength = 0;
-  var continuousAnchorDistances = [0,299.348,759.348,1238.524,1842.699,2342.699,3038.875,3418.875,3998.875,4303.875,4613.875];
+  var continuousAnchorDistances = [0,299.348,759.348,1238.524,1842.699,2342.699];
   var continuousSignalFractions = [0.059730002,0.196568864,0.399119984,0.600881674,0.862369111,1];
 
   function desktopAllowed() {
@@ -411,17 +402,6 @@
     if (to <= from) return t >= to ? 1 : 0;
     var value = clamp((t - from) / (to - from), 0, 1);
     return value * value * (3 - 2 * value);
-  }
-
-  function smoothWindow(t, from, to) {
-    var value = fadeWindow(t, from, to);
-    return value * value * (3 - 2 * value);
-  }
-
-  function mixColor(a, b, t) {
-    function rgb(hex) { return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]; }
-    var from = rgb(a), to = rgb(b);
-    return "rgb(" + from.map(function (value, index) { return Math.round(value + (to[index] - value) * t); }).join(",") + ")";
   }
 
   function wheelPixels(event) {
@@ -754,7 +734,7 @@
       howJourney.entryToQualificationPath || "M 1160 4840 V 5290"
     );
     howJourneyPath = createSampledPath(howJourney.cameraPath);
-    continuousJourneyPath = createSampledPath(DATA.branchJourneys.downstream.cameraPath);
+    continuousJourneyPath = createSampledPath(howJourney.continuousCameraPath);
     continuousJourneyLength = continuousJourneyPath.length;
     howStagePaths = howJourney.stageTransitions.map(function (transition) {
       return createSampledPath(transition.path);
@@ -986,6 +966,8 @@
         howWorkBackAccum = 0;
         howWorkInputEnabled = true;
         howWorkReturning = false;
+        journeyTargetDistance = 0;
+        journeyVisualDistance = 0;
         activeRoute = "howWork";
         if (touchY !== null) howTouchAwaitingRelease = true;
         armHowWheelAfterRelease();
@@ -1075,103 +1057,6 @@
     document.body.classList.add("route-how-entry");
   }
 
-  function bindDownstream() {
-    downstreamJourney = DATA.branchJourneys && DATA.branchJourneys.downstream;
-    if (!downstreamJourney) return;
-    downstreamPaths = downstreamJourney.transitions.map(function (item) { return createSampledPath(item.path); });
-    downstreamRuns = Array.prototype.slice.call(document.querySelectorAll("[data-downstream-signal] path")).map(function (path) {
-      var length = path.getTotalLength();
-      path.style.strokeDasharray = String(length);
-      path.style.strokeDashoffset = String(length);
-      return { element: path, length: length };
-    });
-    downstreamLength = downstreamRuns.length ? downstreamRuns[0].length : 0;
-    downstreamElements = {
-      light: document.querySelector(".downstream-ground-light"), dark: document.querySelector(".downstream-ground-dark"),
-      why: document.querySelector(".why-chapter"), grid: document.querySelector(".why-grid"), intro: document.querySelector(".why-intro"),
-      proofs: document.querySelector(".why-proofs"), cta: document.querySelector(".home-cta"), footer: document.querySelector(".home-world-footer")
-    };
-  }
-
-  function setDownstreamSignal(fraction) {
-    downstreamRuns.forEach(function (run) { run.element.style.strokeDashoffset = String(run.length * (1 - fraction)); });
-  }
-
-  function setDownstreamColors(t) {
-    var colorT = smoothWindow(t, 0.10, 0.30);
-    var core = mixColor("#2f1650", "#f3e9ff", colorT);
-    var glow = mixColor("#b083ae", "#c9a4ff", colorT);
-    downstreamRuns.forEach(function (run) { run.element.style.stroke = run.element.classList.contains("sig-core") ? core : glow; });
-    howContinuousRuns.forEach(function (run) { run.element.style.stroke = run.element.classList.contains("sig-core") ? core : glow; });
-  }
-
-  function settleDownstream(index) {
-    downstreamIndex = index;
-    var fractions = downstreamJourney.signal.fractions;
-    setDownstreamSignal(fractions[index + 1]);
-    setDownstreamColors(1);
-    downstreamElements.light.style.opacity = "0"; downstreamElements.dark.style.opacity = "1";
-    downstreamElements.why.style.opacity = "1"; downstreamElements.grid.style.opacity = "1";
-    downstreamElements.intro.style.opacity = index === 0 ? "1" : "0.18";
-    downstreamElements.proofs.style.opacity = index === 1 ? "1" : (index >= 2 ? "0.12" : "0");
-    downstreamElements.cta.style.opacity = index === 2 ? "1" : (index >= 3 ? "0.18" : "0");
-    downstreamElements.footer.style.opacity = index >= 3 ? "1" : "0";
-    document.body.classList.add("route-downstream"); document.body.classList.remove("on-paper");
-  }
-
-  function renderDownstreamTransition(segment, forwardT) {
-    var fromFraction = downstreamJourney.signal.fractions[segment];
-    var toFraction = downstreamJourney.signal.fractions[segment + 1];
-    var signalT = segment === 0 ? smoothWindow(forwardT, .18, .88) : segment < 3 ? smoothWindow(forwardT, .12, .88) : 1;
-    setDownstreamSignal(fromFraction + (toFraction - fromFraction) * signalT);
-    if (segment === 0) {
-      downstreamElements.light.style.opacity = String(1 - smoothWindow(forwardT, .08, .68));
-      downstreamElements.dark.style.opacity = String(smoothWindow(forwardT, .10, .70));
-      downstreamElements.grid.style.opacity = String(smoothWindow(forwardT, .30, .72));
-      downstreamElements.why.style.opacity = "1";
-      downstreamElements.intro.style.opacity = String(smoothWindow(forwardT, .34, .76));
-      setHowStageOpacity(5, 1 - .86 * smoothWindow(forwardT, .14, .58));
-      setDownstreamColors(forwardT);
-    } else if (segment === 1) {
-      downstreamElements.intro.style.opacity = String(1 - .82 * smoothWindow(forwardT, .10, .55));
-      downstreamElements.proofs.style.opacity = String(smoothWindow(forwardT, .28, .72));
-    } else if (segment === 2) {
-      downstreamElements.proofs.style.opacity = String(1 - .88 * smoothWindow(forwardT, .10, .58));
-      downstreamElements.cta.style.opacity = String(smoothWindow(forwardT, .30, .72));
-    } else if (segment === 3) {
-      downstreamElements.cta.style.opacity = String(1 - .82 * smoothWindow(forwardT, .12, .60));
-      downstreamElements.footer.style.opacity = String(smoothWindow(forwardT, .28, .72));
-    }
-  }
-
-  function startDownstreamTransition(segment, direction) {
-    if (downstreamTransitioning || !downstreamPaths[segment]) return;
-    var runtime = window.SPACES_RUNTIME, sampled = downstreamPaths[segment], definition = downstreamJourney.transitions[segment];
-    downstreamTransitioning = true; howTransitioning = true; howWorkInputEnabled = false;
-    downstreamForwardAccum = downstreamBackAccum = 0; activeRoute = "downstream";
-    document.body.classList.add("route-downstream");
-    downstreamElements.why.style.opacity = "1"; downstreamRuns.forEach(function (run) { run.element.parentNode.style.opacity = "1"; });
-    var state = { t: direction > 0 ? 0 : 1 };
-    window.gsap.to(state, { t: direction > 0 ? 1 : 0, duration: definition.duration, ease: "none", overwrite: true,
-      onUpdate: function () { var forwardT = state.t, eased = easePower3InOut(forwardT); runtime.moveCameraTo(sampled.element.getPointAtLength(sampled.length * eased), 0, "none"); renderDownstreamTransition(segment, forwardT); },
-      onComplete: function () {
-        downstreamTransitioning = false; howTransitioning = false; downstreamForwardAccum = downstreamBackAccum = 0;
-        if (direction < 0 && segment === 0) {
-          downstreamIndex = -1; activeRoute = "howWork"; document.body.classList.remove("route-downstream"); document.body.classList.add("on-paper");
-          downstreamElements.why.style.opacity = "0"; downstreamElements.dark.style.opacity = "0"; downstreamElements.light.style.opacity = "1"; downstreamElements.grid.style.opacity = "0";
-          setDownstreamSignal(0); setDownstreamColors(0); setHowSignalFraction(1); settleHowStage(5); howWorkInputEnabled = true;
-        } else { settleDownstream(direction > 0 ? segment : segment - 1); }
-        armHowWheelAfterRelease();
-      }
-    });
-  }
-
-  function moveDownstream(deltaPixels) {
-    if (downstreamTransitioning) return;
-    if (deltaPixels > 0) { downstreamBackAccum = 0; downstreamForwardAccum += deltaPixels; if (downstreamForwardAccum < HOW_TRANSITION_THRESHOLD) return; if (downstreamIndex >= 4) { downstreamForwardAccum = 0; armHowWheelAfterRelease(); return; } startDownstreamTransition(downstreamIndex + 1, 1); }
-    else if (deltaPixels < 0) { downstreamForwardAccum = 0; downstreamBackAccum += -deltaPixels; if (downstreamBackAccum < HOW_TRANSITION_THRESHOLD) return; startDownstreamTransition(downstreamIndex, -1); }
-  }
-
   function moveHowJourney(deltaPixels) {
     if (howTransitioning || !howWorkInputEnabled || !continuousJourneyPath) return;
     var runtime = window.SPACES_RUNTIME;
@@ -1193,16 +1078,44 @@
   }
   function renderContinuousJourney() {
     var runtime = window.SPACES_RUNTIME;
-    runtime.moveCameraTo(continuousJourneyPath.element.getPointAtLength(journeyVisualDistance),0,"none");
-    var d = journeyVisualDistance;
-    if (d < continuousAnchorDistances[5]) {
-      var sf = piecewise(d, continuousAnchorDistances.slice(0,6), continuousSignalFractions);
-      setHowSignalFraction(sf); howStageElements.forEach(function(el,i){var a=continuousAnchorDistances[i],b=continuousAnchorDistances[i+1],s=clamp((d-a)/(b-a),0,1);el.style.opacity=String(i===0&&d<=a?1:i===0?1-.86*s:i===5&&d>=b?1:.14);});
-      var idx = 0; while(idx<5 && d>continuousAnchorDistances[idx+1]) idx++; var s=clamp((d-continuousAnchorDistances[idx])/(continuousAnchorDistances[idx+1]-continuousAnchorDistances[idx]),0,1); howStageElements.forEach(function(el,i){if(i===idx)el.style.opacity=String(1-.86*s);else if(i===idx+1)el.style.opacity=String(.14+.86*s);else if(i!==idx&&i!==idx+1)el.style.opacity="0.14";});
-      var gate=document.querySelector('.readiness-gate');if(gate)gate.style.opacity=String(idx===2?1:.14);
-    } else {
-      var ds = piecewise(d, continuousAnchorDistances.slice(5), [0,.3513513514,.6486486486,1,1,1]); setDownstreamSignal(ds); setDownstreamColors(clamp((d-continuousAnchorDistances[5])/(continuousAnchorDistances[6]-continuousAnchorDistances[5]),0,1));
-      var t=clamp((d-continuousAnchorDistances[5])/(continuousAnchorDistances[6]-continuousAnchorDistances[5]),0,1); downstreamElements.light.style.opacity=String(1-smoothWindow(t,.08,.68));downstreamElements.dark.style.opacity=String(smoothWindow(t,.10,.70));downstreamElements.grid.style.opacity=String(smoothWindow(t,.30,.72));downstreamElements.why.style.opacity="1";downstreamElements.intro.style.opacity=String(1-smoothWindow(t,.34,.76));downstreamElements.proofs.style.opacity=String(smoothWindow(t,.28,.72));downstreamElements.cta.style.opacity=String(smoothWindow((d-continuousAnchorDistances[7])/(continuousAnchorDistances[8]-continuousAnchorDistances[7]),.30,.72));downstreamElements.footer.style.opacity=String(smoothWindow((d-continuousAnchorDistances[8])/(continuousAnchorDistances[10]-continuousAnchorDistances[8]),.28,.72));document.body.classList.add('route-downstream');
+    runtime.moveCameraTo(
+      continuousJourneyPath.element.getPointAtLength(journeyVisualDistance),
+      0,
+      "none"
+    );
+    var distance = journeyVisualDistance;
+    setHowSignalFraction(
+      piecewise(distance, continuousAnchorDistances, continuousSignalFractions)
+    );
+
+    var index = 0;
+    while (
+      index < continuousAnchorDistances.length - 1 &&
+      distance > continuousAnchorDistances[index + 1]
+    ) {
+      index += 1;
+    }
+    var nextIndex = Math.min(index + 1, howStageElements.length - 1);
+    var span = continuousAnchorDistances[nextIndex] - continuousAnchorDistances[index];
+    var stageProgress = span > 0
+      ? clamp((distance - continuousAnchorDistances[index]) / span, 0, 1)
+      : 0;
+
+    howStageElements.forEach(function (element, stageIndex) {
+      if (index === nextIndex) {
+        element.style.opacity = stageIndex === index ? "1" : "0.14";
+      } else if (stageIndex === index) {
+        element.style.opacity = String(1 - .86 * stageProgress);
+      } else if (stageIndex === nextIndex) {
+        element.style.opacity = String(.14 + .86 * stageProgress);
+      } else {
+        element.style.opacity = "0.14";
+      }
+    });
+
+    var gate = document.querySelector(".readiness-gate");
+    if (gate && howStageElements[2]) {
+      gate.style.opacity = howStageElements[2].style.opacity;
     }
   }
 
@@ -1332,7 +1245,7 @@
     if (activeRoute === "hub") {
       return;
     }
-    if (activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork" && activeRoute !== "downstream") return;
+    if (activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork") return;
     event.preventDefault();
     if (howTransitioning) return;
     if (activeRoute === "dataCenter") moveDcCamera(event.deltaY, true);
@@ -1349,10 +1262,6 @@
       var stageWheelPixels = wheelPixels(event);
       if (!consumeHowWheelMomentum()) moveHowJourney(stageWheelPixels);
     }
-    else if (activeRoute === "downstream") {
-      var downstreamPixels = wheelPixels(event);
-      if (!consumeHowWheelMomentum()) moveDownstream(downstreamPixels);
-    }
     else if (howInputEnabled) {
       var howPixels = wheelPixels(event);
       if (howPixels > 0) {
@@ -1368,13 +1277,13 @@
   }
 
   function onTouchStart(event) {
-    if ((activeRoute === "dataCenter" || activeRoute === "it" || activeRoute === "av" || activeRoute === "howEntry" || activeRoute === "howWork" || activeRoute === "downstream") && event.touches.length) {
+    if ((activeRoute === "dataCenter" || activeRoute === "it" || activeRoute === "av" || activeRoute === "howEntry" || activeRoute === "howWork") && event.touches.length) {
       touchY = event.touches[0].clientY;
     }
   }
 
   function onTouchMove(event) {
-    if ((activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork" && activeRoute !== "downstream") || touchY === null || !event.touches.length) return;
+    if ((activeRoute !== "dataCenter" && activeRoute !== "it" && activeRoute !== "av" && activeRoute !== "howEntry" && activeRoute !== "howWork") || touchY === null || !event.touches.length) return;
     event.preventDefault();
     var nextY = event.touches[0].clientY;
     if (activeRoute === "dataCenter") moveDcCamera(touchY - nextY, false);
@@ -1392,9 +1301,6 @@
     }
     else if (activeRoute === "howWork") {
       if (!howTouchAwaitingRelease) moveHowJourney(touchY - nextY);
-    }
-    else if (activeRoute === "downstream") {
-      if (!howTouchAwaitingRelease) moveDownstream(touchY - nextY);
     }
     touchY = nextY;
   }
@@ -1624,7 +1530,6 @@
     bindHowTransitionElements();
     bindHowEntry();
     bindHowJourney();
-    bindDownstream();
     setControlsReady(false);
 
     controls.forEach(function (control) {

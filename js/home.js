@@ -14,7 +14,7 @@ window.SPACES_HOME = {
 
   world: {
     w: 2340,
-    h: 8140
+    h: 6220
   },
 
   scroll: {
@@ -233,11 +233,7 @@ window.SPACES_HOME = {
       y: 5020,
       w: 2340,
       h: 1200
-    },
-
-    why: { key: "why", type: "dark", x: 740, y: 6120, w: 1600, h: 920 },
-    finalCta: { key: "final-cta", type: "dark", x: 740, y: 7000, w: 1600, h: 520 },
-    homeFooter: { key: "home-footer", type: "dark", x: 740, y: 7520, w: 1600, h: 620 }
+    }
   },
 
   /*
@@ -397,6 +393,7 @@ window.SPACES_HOME = {
       cameraEnd: { x: 960, y: 5870 },
       entryToQualificationPath: "M 1160 4840 V 5290",
       cameraPath: "M 1160 4840 V 5290 Q 1160 5305 1175 5305 H 1918 Q 1960 5305 1960 5347 V 5828 Q 1960 5870 1918 5870 H 960",
+      continuousCameraPath: "M 1160 5290 Q 1160 5305 1175 5305 H 1918 Q 1960 5305 1960 5347 V 5828 Q 1960 5870 1918 5870 H 960",
       cameraStops: [
         { key: "entry", x: 1160, y: 4840 },
         { key: "qualification", x: 1160, y: 5290 },
@@ -444,28 +441,6 @@ window.SPACES_HOME = {
         ]
       },
       continuation: { x: 1142, y: 5960 }
-    },
-    downstream: {
-      cameraPath: "M 1160 5290 Q 1160 5305 1175 5305 H 1918 Q 1960 5305 1960 5347 V 5828 Q 1960 5870 1918 5870 H 960 H 1100 Q 1142 5870 1142 5912 V 7975",
-      cameraStops: [
-        { key: "handover", x: 960, y: 5870 },
-        { key: "whyIntro", x: 1142, y: 6400 },
-        { key: "whyProofs", x: 1142, y: 6780 },
-        { key: "cta", x: 1142, y: 7360 },
-        { key: "footerTop", x: 1142, y: 7665 },
-        { key: "footerBottom", x: 1142, y: 7975 }
-      ],
-      transitions: [
-        { path: "M 960 5870 H 1518 Q 1560 5870 1560 5912 V 6400", duration: 1.35 },
-        { path: "M 1560 6400 V 6780", duration: 0.90 },
-        { path: "M 1560 6780 V 7360", duration: 1.05 },
-        { path: "M 1560 7360 V 7665", duration: 0.90 },
-        { path: "M 1560 7665 V 7975", duration: 0.78 }
-      ],
-      signal: {
-        d: "M 1142 5960 V 7440",
-        fractions: [0, 0.3513513514, 0.6486486486, 1, 1, 1]
-      }
     }
   },
 
