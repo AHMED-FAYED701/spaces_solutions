@@ -113,17 +113,44 @@ window.SPACES_HOME = {
       }
     },
 
+    /*
+     * CHAPTER 05 — SOLUTIONS / DIVISIONS HUB
+     *
+     * World:
+     * x 740 -> 1540
+     * y 962 -> 1462
+     *
+     * The dark Solutions ground begins intentionally at the About seam (y=962).
+     * There is no transition filler between About and Solutions.
+     */
     c05: {
       key: "c05",
       type: "dark",
       x: 740,
-      y: 1020,
+      y: 962,
       w: 800,
       h: 500,
 
       cameraStop: {
-        x: 1160,
-        y: 1260
+        x: 1140,
+        y: 1230
+      },
+
+      copy: {
+        x: 980,
+        y: 1096,
+        w: 320,
+        align: "center"
+      },
+
+      cards: {
+        y: 1248,
+        w: 190,
+        h: 140,
+
+        av: { x: 800, cx: 895 },
+        it: { x: 1045, cx: 1140 },
+        dataCenter: { x: 1290, cx: 1385 }
       }
     },
 
@@ -162,7 +189,12 @@ window.SPACES_HOME = {
       y: 1020,
       w: 740,
       h: 500,
-      cameraStop: { x: 355, y: 1260 }
+
+      /*
+       * Intro camera stop lowered to y=1340 so the lower composition
+       * band (kicker 1295 / headline 1322 / body 1420) is fully framed.
+       */
+      cameraStop: { x: 355, y: 1340 }
     },
 
     avServices: {
@@ -191,7 +223,7 @@ window.SPACES_HOME = {
       y: 4520,
       w: 2340,
       h: 500,
-      cameraStop: { x: 1160, y: 4780 }
+      cameraStop: { x: 1160, y: 4840 }
     },
 
     howWorkMain: {
@@ -239,9 +271,9 @@ window.SPACES_HOME = {
       "M 355 200 " +
       "L 355 696 " +
       "Q 355 730 389 730 " +
-      "L 1126 730 " +
-      "Q 1160 730 1160 764 " +
-      "L 1160 1260",
+      "L 1106 730 " +
+      "Q 1140 730 1140 764 " +
+      "L 1140 1230",
 
     stops: {
       hero: {
@@ -265,32 +297,34 @@ window.SPACES_HOME = {
       },
 
       divisions: {
-        x: 1160,
-        y: 1260
+        x: 1140,
+        y: 1230
       }
     }
   },
 
   routes: {
     hub: {
-      x: 1160,
-      y: 1260
+      x: 1140,
+      y: 1230
     },
     dataCenter: {
-      path: "M 1160 1260 H 1960",
+      path: "M 1140 1230 H 1960",
       target: { x: 1960, y: 1260 },
       duration: 1.15,
       ease: "power3.inOut"
     },
     it: {
-      path: "M 1160 1260 V 1750",
+      path: "M 1140 1230 V 1750",
       target: { x: 1160, y: 1750 },
       duration: 0.90,
       ease: "power3.inOut"
     },
     av: {
-      path: "M 1160 1260 H 355",
-      target: { x: 355, y: 1260 },
+      path: "M 1140 1230 H 355",
+
+      /* Intro rests on the lowered AV composition band. */
+      target: { x: 355, y: 1340 },
       duration: 1.15,
       ease: "power3.inOut"
     }
@@ -338,22 +372,38 @@ window.SPACES_HOME = {
       ]
     },
     av: {
+      /*
+       * cameraStart stays 1260: it is the progress ORIGIN and clamp
+       * floor for the six downstream AV service reveal windows.
+       * Changing it would reshift the whole service tower.
+       *
+       * introStop is the resting camera for the AV intro only.
+       */
       cameraStart: { x: 355, y: 1260 },
+      introStop: { x: 355, y: 1340 },
       cameraEnd: { x: 355, y: 3790 },
       cameraPath: "M 355 1260 V 3790",
       cameraStops: [
-        { key: "intro", x: 355, y: 1260 }, { key: "service01", x: 355, y: 1790 },
-        { key: "service02", x: 355, y: 2190 }, { key: "service03", x: 355, y: 2590 },
-        { key: "service04", x: 355, y: 2990 }, { key: "service05", x: 355, y: 3390 },
-        { key: "service06", x: 355, y: 3790 }
+        { key: "intro", x: 355, y: 1260 },
+        { key: "overview", x: 355, y: 1710 },
+        { key: "service01", x: 355, y: 2060 },
+        { key: "service02", x: 355, y: 2380 },
+        { key: "service03", x: 355, y: 2700 },
+        { key: "service04", x: 355, y: 3020 },
+        { key: "service05", x: 355, y: 3340 },
+        { key: "service06", x: 355, y: 3660 }
+      ],
+      contentReveals: [
+        { key: "overview", from: 0.10 },
+        { key: "service01", from: 0.26 },
+        { key: "service02", from: 0.39 },
+        { key: "service03", from: 0.52 },
+        { key: "service04", from: 0.65 },
+        { key: "service05", from: 0.78 },
+        { key: "service06", from: 0.91 }
       ],
       signals: [
-        { key: "av-service-01", d: "M 355 1510 V 1643 Q 355 1655 367 1655 H 528 Q 540 1655 540 1667 V 1743 Q 540 1755 528 1755 H 367 Q 355 1755 355 1767 V 1990", window: { from: 0.04, to: 0.22 } },
-        { key: "av-service-02", d: "M 355 1990 V 2043 Q 355 2055 343 2055 H 212 Q 200 2055 200 2067 V 2143 Q 200 2155 212 2155 H 343 Q 355 2155 355 2167 V 2390", window: { from: 0.18, to: 0.38 } },
-        { key: "av-service-03", d: "M 355 2390 V 2443 Q 355 2455 367 2455 H 528 Q 540 2455 540 2467 V 2543 Q 540 2555 528 2555 H 367 Q 355 2555 355 2567 V 2790", window: { from: 0.34, to: 0.54 } },
-        { key: "av-service-04", d: "M 355 2790 V 2843 Q 355 2855 343 2855 H 212 Q 200 2855 200 2867 V 2943 Q 200 2955 212 2955 H 343 Q 355 2955 355 2967 V 3190", window: { from: 0.50, to: 0.70 } },
-        { key: "av-service-05", d: "M 355 3190 V 3243 Q 355 3255 367 3255 H 528 Q 540 3255 540 3267 V 3343 Q 540 3355 528 3355 H 367 Q 355 3355 355 3367 V 3590", window: { from: 0.66, to: 0.86 } },
-        { key: "av-service-06", d: "M 355 3590 V 3643 Q 355 3655 343 3655 H 212 Q 200 3655 200 3667 V 3743 Q 200 3755 212 3755 H 343 Q 355 3755 355 3767 V 3990", window: { from: 0.82, to: 1.00 } }
+        { key: "continuous", d: "M 355 1510 V 1900 V 1948 Q 355 1972 331 1972 H 76 Q 52 1972 52 1996 V 2124 Q 52 2148 76 2148 H 331 Q 355 2148 355 2172 V 2220 V 2268 Q 355 2292 379 2292 H 634 Q 658 2292 658 2316 V 2444 Q 658 2468 634 2468 H 379 Q 355 2468 355 2492 V 2540 V 2588 Q 355 2612 331 2612 H 76 Q 52 2612 52 2636 V 2764 Q 52 2788 76 2788 H 331 Q 355 2788 355 2812 V 2860 V 2908 Q 355 2932 379 2932 H 634 Q 658 2932 658 2956 V 3084 Q 658 3108 634 3108 H 379 Q 355 3108 355 3132 V 3180 V 3228 Q 355 3252 331 3252 H 76 Q 52 3252 52 3276 V 3404 Q 52 3428 76 3428 H 331 Q 355 3428 355 3452 V 3500 V 3548 Q 355 3572 379 3572 H 634 Q 658 3572 658 3596 V 3724 Q 658 3748 634 3748 H 379 Q 355 3748 355 3772 V 3990" }
       ]
     },
     howWork: {
@@ -371,7 +421,7 @@ window.SPACES_HOME = {
       ],
       continuousSignal: {
         key: "how-signal-continuous",
-        d: "M 1160 5220 L 1160 5545 C 1235 5545 1300 5570 1370 5600 C 1405 5615 1440 5615 1480 5598 C 1580 5578 1680 5578 1760 5598 C 1815 5612 1860 5610 1910 5595 C 1960 5595 2000 5625 2020 5670 C 2040 5720 2040 5950 2020 6000 C 2005 6040 1985 6060 1960 6070 C 1860 6060 1760 6075 1680 6100 C 1600 6125 1530 6170 1460 6210 C 1360 6190 1270 6190 1200 6210 C 1145 6225 1110 6250 1100 6285 L 1100 6370",
+        d: "M 1160 5220 V 5358 Q 1160 5400 1202 5400 H 1918 Q 1960 5400 1960 5442 V 5918 Q 1960 5960 1918 5960 H 1142 Q 1100 5960 1100 6002 V 6180",
         windows: [
           { from: 0.02, to: 0.20 },
           { from: 0.20, to: 0.34 },
@@ -379,16 +429,18 @@ window.SPACES_HOME = {
           { from: 0.49, to: 0.67 },
           { from: 0.67, to: 0.86 },
           { from: 0.86, to: 1.00 }
+        ],
+        distanceAnchors: [
+          { progress: 0.02, fraction: 0.000000000 },
+          { progress: 0.20, fraction: 0.080641183 },
+          { progress: 0.34, fraction: 0.197197597 },
+          { progress: 0.49, fraction: 0.387354874 },
+          { progress: 0.67, fraction: 0.539112891 },
+          { progress: 0.86, fraction: 0.763689512 },
+          { progress: 0.96, fraction: 0.930379054 },
+          { progress: 1.00, fraction: 1.000000000 }
         ]
       },
-      signals: [
-        { key: "how-stage-01", d: "M 1160 5220 L 1160 5545", window: { from: 0.02, to: 0.20 } },
-        { key: "how-stage-02", d: "M 1160 5545 C 1235 5545 1300 5570 1370 5600 C 1405 5615 1440 5615 1480 5598", window: { from: 0.17, to: 0.34 } },
-        { key: "how-stage-03", d: "M 1480 5598 C 1580 5578 1680 5578 1760 5598 C 1815 5612 1860 5610 1910 5595", window: { from: 0.30, to: 0.49 } },
-        { key: "how-stage-04", d: "M 1910 5595 C 1960 5595 2000 5625 2020 5670 C 2040 5720 2040 5950 2020 6000 C 2005 6040 1985 6060 1960 6070", window: { from: 0.45, to: 0.67 } },
-        { key: "how-stage-05", d: "M 1960 6070 C 1860 6060 1760 6075 1680 6100 C 1600 6125 1530 6170 1460 6210", window: { from: 0.63, to: 0.86 } },
-        { key: "how-stage-06", d: "M 1460 6210 C 1360 6190 1270 6190 1200 6210 C 1145 6225 1110 6250 1100 6285 L 1100 6370", window: { from: 0.80, to: 1.00 } }
-      ],
       continuation: { x: 1100, y: 6180 }
     },
     whySpaces: {
@@ -477,8 +529,30 @@ window.SPACES_HOME = {
     },
     av: {
       key: "route-av",
-      d: "M 910 1300 V 1428 Q 910 1440 898 1440 H 367 Q 355 1440 355 1452 V 1510",
-      start: { x: 910, y: 1300 },
+
+      /*
+       * AV route-only continuation THROUGH the AV hub card.
+       * Card rect (800,1248) 190x140 -> top-centre seam (895,1248),
+       * bottom-centre emergence (895,1388).
+       *
+       * The card sits above the signal in z-order, so this run is
+       * occluded rather than geometrically broken.
+       */
+      cardThrough: "M 895 1248 V 1388",
+
+      /*
+       * Cardinal-only route. Corner radius 12u.
+       * Emerges (895,1388) -> down -> turn right at y=1450 ->
+       * horizontal travel -> turn down on x=355 -> ends (355,1510).
+       *
+       * (355,1450) is the visual contact point with the AV intro,
+       * whose copy right edge is also x=355.
+       *
+       * (355,1510) is the exact start of the continuous AV service signal
+       * signal. Seam departure is 0.
+       */
+      d: "M 895 1388 V 1438 Q 895 1450 883 1450 H 367 Q 355 1450 355 1462 V 1510",
+      start: { x: 895, y: 1248 },
       end: { x: 355, y: 1510 },
       revealDuration: 0.90
     },
@@ -607,7 +681,17 @@ window.SPACES_HOME = {
 
       {
         key: "divisions-feed",
-        d: "M 1140 962 V 1068 Q 1140 1080 1128 1080 H 888 Q 876 1080 876 1092 V 1230 Q 876 1242 888 1242 H 1160",
+
+        /*
+         * Solutions trunk.
+         *
+         * Continuous vertical run from the locked About seam (1140,962)
+         * to the split point (1140,1230).
+         *
+         * It passes BEHIND the centred Solutions intro through z-order only.
+         * The geometry is never cut.
+         */
+        d: "M 1140 962 V 1230",
 
         start: {
           x: 1140,
@@ -615,8 +699,8 @@ window.SPACES_HOME = {
         },
 
         end: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         window: {
@@ -628,16 +712,18 @@ window.SPACES_HOME = {
 
       {
         key: "division-dc",
-        d: "M 1160 1242 H 1398 Q 1410 1242 1410 1254 V 1300",
+
+        /* Split (1140,1230) -> DATA card top-centre seam (1385,1248). */
+        d: "M 1140 1230 H 1373 Q 1385 1230 1385 1242 V 1248",
 
         start: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         end: {
-          x: 1410,
-          y: 1300
+          x: 1385,
+          y: 1248
         },
 
         window: {
@@ -649,16 +735,18 @@ window.SPACES_HOME = {
 
       {
         key: "division-it",
-        d: "M 1160 1242 V 1300",
+
+        /* Split (1140,1230) -> IT card top-centre seam (1140,1248). */
+        d: "M 1140 1230 V 1248",
 
         start: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         end: {
-          x: 1160,
-          y: 1300
+          x: 1140,
+          y: 1248
         },
 
         window: {
@@ -670,16 +758,18 @@ window.SPACES_HOME = {
 
       {
         key: "division-av",
-        d: "M 1160 1242 H 922 Q 910 1242 910 1254 V 1300",
+
+        /* Split (1140,1230) -> AV card top-centre seam (895,1248). */
+        d: "M 1140 1230 H 907 Q 895 1230 895 1242 V 1248",
 
         start: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         end: {
-          x: 910,
-          y: 1300
+          x: 895,
+          y: 1248
         },
 
         window: {
@@ -756,8 +846,8 @@ window.SPACES_HOME = {
         to: "division-dc",
 
         point: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         departure: 0
@@ -768,8 +858,8 @@ window.SPACES_HOME = {
         to: "division-it",
 
         point: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         departure: 0
@@ -780,8 +870,8 @@ window.SPACES_HOME = {
         to: "division-av",
 
         point: {
-          x: 1160,
-          y: 1242
+          x: 1140,
+          y: 1230
         },
 
         departure: 0
@@ -789,19 +879,19 @@ window.SPACES_HOME = {
     ],
 
     divisionContinuations: {
-      dataCenter: {
-        x: 910,
-          y: 1300,
+      av: {
+        x: 895,
+        y: 1248,
         direction: "left"
       },
       it: {
-        x: 1160,
-          y: 1300,
+        x: 1140,
+        y: 1248,
         direction: "down"
       },
-      av: {
-        x: 1410,
-          y: 1300,
+      dataCenter: {
+        x: 1385,
+        y: 1248,
         direction: "right"
       }
     }
@@ -826,7 +916,7 @@ window.SPACES_HOME = {
       chapter: "how-work-main",
       className: "on-paper",
       x0: 0,
-      y0: 5140,
+      y0: 5091,
       x1: 2340,
       y1: 6280
     }
