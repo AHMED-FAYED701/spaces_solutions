@@ -410,7 +410,7 @@ window.SPACES_HOME = {
       cameraStart: { x: 1160, y: 4840 },
       cameraEnd: { x: 960, y: 5870 },
       entryToQualificationPath: "M 1160 4840 V 5290",
-      cameraPath: "M 1160 4840 V 5290 L 1450 5305 L 1918 5305 Q 1960 5305 1960 5347 L 1960 5828 Q 1960 5870 1918 5870 L 960 5870",
+      cameraPath: "M 1160 4840 V 5290 Q 1160 5305 1175 5305 H 1918 Q 1960 5305 1960 5347 V 5828 Q 1960 5870 1918 5870 H 960",
       cameraStops: [
         { key: "entry", x: 1160, y: 4840 },
         { key: "qualification", x: 1160, y: 5290 },
@@ -419,6 +419,21 @@ window.SPACES_HOME = {
         { key: "execution", x: 1960, y: 5750 },
         { key: "validation", x: 1460, y: 5870 },
         { key: "handover", x: 960, y: 5870 }
+      ],
+      stageTransitions: [
+        { path: "M 1160 5290 Q 1160 5305 1175 5305 H 1450", duration: 0.85 },
+        { path: "M 1450 5305 H 1910", duration: 1.05 },
+        { path: "M 1910 5305 H 1918 Q 1960 5305 1960 5347 V 5750", duration: 1.10 },
+        { path: "M 1960 5750 V 5828 Q 1960 5870 1918 5870 H 1460", duration: 1.20 },
+        { path: "M 1460 5870 H 960", duration: 1.10 }
+      ],
+      stageSignalFractions: [
+        0.0539758,
+        0.1776412,
+        0.3606895,
+        0.5430242,
+        0.7793347,
+        0.9037137
       ],
       continuousSignal: {
         key: "how-signal-continuous",

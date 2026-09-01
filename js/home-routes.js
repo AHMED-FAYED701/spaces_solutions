@@ -63,6 +63,14 @@
   var howEntryTransitionTween = null;
   var howEntryWheelAccum = 0;
   var howWorkBackAccum = 0;
+  var howWorkForwardAccum = 0;
+  var howStageIndex = 0;
+  var howStageElements = [];
+  var howStagePaths = [];
+  var howStageTween = null;
+  var howWheelReleaseTimer = 0;
+  var howWheelAwaitingRelease = false;
+  var howTouchAwaitingRelease = false;
   var howQualDistance = 0;
   var howEntryTransitionPath = null;
   var howEntryElement = null;
@@ -434,6 +442,9 @@
     howTransitionDarkElement = document.querySelector(".how-transition-ground-dark");
     howTransitionLightElement = document.querySelector(".how-transition-ground-light");
     howQualificationElement = document.querySelector(".how-stage-01");
+    howStageElements = Array.prototype.slice.call(
+      document.querySelectorAll(".how-stage")
+    );
     howFutureStageElements = Array.prototype.slice.call(
       document.querySelectorAll(
         ".how-stage-02,.how-stage-03,.how-stage-04,.how-stage-05,.how-stage-06,.readiness-gate"
@@ -577,11 +588,102 @@
     howContinuousRuns.forEach(function (run) {
       run.element.style.strokeDashoffset = String(run.length - revealDistance);
     });
-    var gateProgress = clamp((howProgress - 0.36) / 0.12, 0, 1);
-    var leftRail = document.querySelector(".readiness-gate .gate-left");
-    var rightRail = document.querySelector(".readiness-gate .gate-right");
-    if (leftRail) leftRail.style.transform = "translateX(" + (-gateProgress) + "rem)";
-    if (rightRail) rightRail.style.transform = "translateX(" + gateProgress + "rem)";
+  }
+
+  function setHowSignalFraction(fraction) {
+    var revealDistance = howContinuousSignalLength * fraction;
+    howContinuousRuns.forEach(function (run) {
+      run.element.style.strokeDashoffset = String(run.length - revealDistance);
+    });
+  }
+
+  function setHowStageOpacity(index, opacity) {
+    if (howStageElements[index]) {
+      howStageElements[index].style.opacity = String(opacity);
+    }
+    if (index === 2) {
+      var gate = document.querySelector(".readiness-gate");
+      if (gate) gate.style.opacity = String(opacity);
+    }
+  }
+
+  function settleHowStage(index) {
+    howStageIndex = clamp(index, 0, 5);
+    howStageElements.forEach(function (element, stageIndex) {
+      element.style.opacity = stageIndex === howStageIndex ? "1" : "0.14";
+    });
+    var gate = document.querySelector(".readiness-gate");
+    if (gate) gate.style.opacity = howStageIndex === 2 ? "1" : "0.14";
+    setHowSignalFraction(howJourney.stageSignalFractions[howStageIndex]);
+    howProgress = howStageIndex / 5;
+  }
+
+  function armHowWheelAfterRelease() {
+    howWheelAwaitingRelease = true;
+    if (howWheelReleaseTimer) window.clearTimeout(howWheelReleaseTimer);
+    howWheelReleaseTimer = window.setTimeout(function () {
+      howWheelReleaseTimer = 0;
+      howWheelAwaitingRelease = false;
+    }, 140);
+  }
+
+  function consumeHowWheelMomentum() {
+    if (!howWheelAwaitingRelease) return false;
+    armHowWheelAfterRelease();
+    return true;
+  }
+
+  function startHowStageTransition(targetIndex) {
+    if (howTransitioning || targetIndex < 0 || targetIndex > 5) return;
+    var fromIndex = howStageIndex;
+    var direction = targetIndex > fromIndex ? 1 : -1;
+    var segmentIndex = direction > 0 ? fromIndex : targetIndex;
+    var sampled = howStagePaths[segmentIndex];
+    var definition = howJourney.stageTransitions[segmentIndex];
+    var runtime = window.SPACES_RUNTIME;
+    if (!sampled || !definition || !runtime) return;
+
+    howTransitioning = true;
+    howWorkInputEnabled = false;
+    if (touchY !== null) howTouchAwaitingRelease = true;
+    howWorkForwardAccum = 0;
+    howWorkBackAccum = 0;
+    var startFraction = howJourney.stageSignalFractions[fromIndex];
+    var endFraction = howJourney.stageSignalFractions[targetIndex];
+    var state = { t: 0 };
+    howStageTween = window.gsap.to(state, {
+      t: 1,
+      duration: definition.duration,
+      ease: "none",
+      overwrite: true,
+      onUpdate: function () {
+        var t = clamp(state.t, 0, 1);
+        var eased = easePower3InOut(t);
+        var distanceProgress = direction > 0 ? eased : 1 - eased;
+        runtime.moveCameraTo(
+          sampled.element.getPointAtLength(sampled.length * distanceProgress),
+          0,
+          "none"
+        );
+        howStageElements.forEach(function (element, index) {
+          if (index !== fromIndex && index !== targetIndex) element.style.opacity = "0.14";
+        });
+        setHowStageOpacity(fromIndex, 1 - 0.86 * fadeWindow(t, 0.10, 0.58));
+        setHowStageOpacity(targetIndex, 0.14 + 0.86 * fadeWindow(t, 0.24, 0.72));
+        var signalT = fadeWindow(t, 0.12, 0.88);
+        setHowSignalFraction(startFraction + (endFraction - startFraction) * signalT);
+      },
+      onComplete: function () {
+        howStageTween = null;
+        runtime.moveCameraTo(howJourney.cameraStops[targetIndex + 1], 0, "none");
+        settleHowStage(targetIndex);
+        howTransitioning = false;
+        howWorkForwardAccum = 0;
+        howWorkBackAccum = 0;
+        howWorkInputEnabled = true;
+        armHowWheelAfterRelease();
+      }
+    });
   }
 
   function getHowSignalRevealDistance(progress) {
@@ -754,6 +856,9 @@
       howJourney.entryToQualificationPath || "M 1160 4840 V 5290"
     );
     howJourneyPath = createSampledPath(howJourney.cameraPath);
+    howStagePaths = howJourney.stageTransitions.map(function (transition) {
+      return createSampledPath(transition.path);
+    });
     howPathLength = howJourneyPath.length;
     howContinuousRuns = Array.prototype.slice.call(
       document.querySelectorAll(
@@ -1010,6 +1115,7 @@
         applyHowSignalColor(1);
         runtime.moveCameraTo({ x: 1160, y: 5290 }, 0, "none");
         clearHowTransitionOpacity();
+        settleHowStage(0);
         document.body.classList.remove("route-how-entry", "route-how-transition");
         document.body.classList.add("route-how-work");
         howTransitioning = false;
@@ -1018,6 +1124,8 @@
         howWorkInputEnabled = true;
         howWorkReturning = false;
         activeRoute = "howWork";
+        if (touchY !== null) howTouchAwaitingRelease = true;
+        armHowWheelAfterRelease();
       }
     });
   }
@@ -1105,34 +1213,21 @@
   }
 
   function moveHowJourney(deltaPixels) {
-    var runtime = window.SPACES_RUNTIME;
     if (howTransitioning) return;
-    if (!howWorkInputEnabled || howWorkReturning || !runtime || !howJourneyPath) return;
-    if (howProgress >= 0.999 && deltaPixels > 12) {
-      activateWhyJourney();
-      return;
-    }
-    if (deltaPixels >= 0) howWorkBackAccum = 0;
-    if (
-      howTargetDistance <= howQualDistance + 0.5 &&
-      howRenderedDistance <= howQualDistance + 0.5 &&
-      deltaPixels < 0
-    ) {
+    if (!howWorkInputEnabled || howWorkReturning) return;
+    if (deltaPixels > 0) {
+      howWorkBackAccum = 0;
+      howWorkForwardAccum += deltaPixels;
+      if (howWorkForwardAccum < HOW_TRANSITION_THRESHOLD) return;
+      if (howStageIndex === 5) activateWhyJourney();
+      else startHowStageTransition(howStageIndex + 1);
+    } else if (deltaPixels < 0) {
+      howWorkForwardAccum = 0;
       howWorkBackAccum += -deltaPixels;
-      if (howWorkBackAccum >= HOW_TRANSITION_THRESHOLD) {
-        startHowWorkReverseTransition();
-      }
-      return;
+      if (howWorkBackAccum < HOW_TRANSITION_THRESHOLD) return;
+      if (howStageIndex === 0) startHowWorkReverseTransition();
+      else startHowStageTransition(howStageIndex - 1);
     }
-    if (howTargetDistance >= howPathLength && deltaPixels > 0) return;
-    var nextTargetDistance = clamp(
-      howTargetDistance + (deltaPixels / runtime.getPxPerUnit()) * 0.82,
-      howQualDistance,
-      howPathLength
-    );
-    if (nextTargetDistance === howTargetDistance) return;
-    howTargetDistance = nextTargetDistance;
-    tweenHowRenderedDistance();
   }
 
   function activateWhyJourney() {
@@ -1142,6 +1237,7 @@
     howRenderedDistance = howPathLength;
     howRenderState.distance = howPathLength;
     renderHowJourney(1);
+    settleHowStage(5);
     howWorkInputEnabled = false;
     killWhyRenderTween();
     whyTargetDistance = 0;
@@ -1169,6 +1265,7 @@
     howRenderedDistance = howPathLength;
     howRenderState.distance = howPathLength;
     renderHowJourney(1);
+    settleHowStage(5);
     howWorkInputEnabled = true;
     howWorkReturning = false;
     activeRoute = "howWork";
@@ -1472,7 +1569,10 @@
           : event.deltaY;
       moveAvCamera(avDeltaPixels, true);
     }
-    else if (activeRoute === "howWork") moveHowJourney(event.deltaY);
+    else if (activeRoute === "howWork") {
+      var stageWheelPixels = wheelPixels(event);
+      if (!consumeHowWheelMomentum()) moveHowJourney(stageWheelPixels);
+    }
     else if (activeRoute === "whySpaces") moveWhyJourney(event.deltaY);
     else if (activeRoute === "finalCta") moveCtaJourney(event.deltaY);
     else if (howInputEnabled) {
@@ -1512,7 +1612,9 @@
         if (howTouchPixels < -12) leaveHowEntry(false);
       }
     }
-    else if (activeRoute === "howWork") moveHowJourney(touchY - nextY);
+    else if (activeRoute === "howWork") {
+      if (!howTouchAwaitingRelease) moveHowJourney(touchY - nextY);
+    }
     else if (activeRoute === "whySpaces") moveWhyJourney(touchY - nextY);
     else moveCtaJourney(touchY - nextY);
     touchY = nextY;
@@ -1520,6 +1622,7 @@
 
   function onTouchEnd() {
     touchY = null;
+    howTouchAwaitingRelease = false;
   }
 
   function activateRoute(route) {
@@ -1627,6 +1730,14 @@
         howTransitioning = false;
         howEntryWheelAccum = 0;
         howWorkBackAccum = 0;
+        howWorkForwardAccum = 0;
+        howStageIndex = 0;
+        howWheelAwaitingRelease = false;
+        howTouchAwaitingRelease = false;
+        if (howWheelReleaseTimer) {
+          window.clearTimeout(howWheelReleaseTimer);
+          howWheelReleaseTimer = 0;
+        }
         clearHowTransitionOpacity();
         if (howJourney) renderHowJourney(0);
         killWhyRenderTween();
