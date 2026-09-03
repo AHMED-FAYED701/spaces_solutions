@@ -115,6 +115,15 @@
   var howFutureStageElements = [];
   var HOW_TRANSITION_DURATION = 1.10;
   var HOW_TRANSITION_THRESHOLD = 18;
+  var AV_BRANCH_INPUT_GAIN = 1.55;
+  var AV_HOW_PRE_HANDOVER_GAIN = 1.50;
+  var AV_POST_HANDOVER_GAIN = 1.40;
+  var IT_BRANCH_INPUT_GAIN = 1.55;
+  var IT_HOW_PRE_HANDOVER_GAIN = 1.50;
+  var IT_POST_HANDOVER_GAIN = 1.40;
+  var DC_BRANCH_INPUT_GAIN = 1.55;
+  var DC_HOW_PRE_HANDOVER_GAIN = 1.50;
+  var DC_POST_HANDOVER_GAIN = 1.40;
   var touchY = null;
   var journeyTargetDistance = 0;
   var journeyVisualDistance = 0;
@@ -126,8 +135,8 @@
   /*
    * DOWNSTREAM — WHY + CONTACT.
    *
-   * Same continuous controller and camera path. The input gain returns to 1.00
-   * after Handover. These are cumulative distances along continuousJourneyPath,
+   * Same continuous controller and camera path. Input gain changes at Handover.
+   * These are cumulative distances along continuousJourneyPath,
    * measured from the live path at bind time (never hard-coded), in the order
    * authored in home.js:
    *
@@ -1396,22 +1405,34 @@
     if (px < 0 && journeyTargetDistance <= 0.001) { startHowWorkReverseTransition(); return; }
     var inputDistance = px / runtime.getPxPerUnit();
     var handoverDistance = continuousAnchorDistances[continuousAnchorDistances.length - 1];
+    var preHandoverGain = 1.25;
+    var postHandoverGain = 1.00;
+    if (howSource === "av") {
+      preHandoverGain = AV_HOW_PRE_HANDOVER_GAIN;
+      postHandoverGain = AV_POST_HANDOVER_GAIN;
+    } else if (howSource === "it") {
+      preHandoverGain = IT_HOW_PRE_HANDOVER_GAIN;
+      postHandoverGain = IT_POST_HANDOVER_GAIN;
+    } else if (howSource === "dataCenter") {
+      preHandoverGain = DC_HOW_PRE_HANDOVER_GAIN;
+      postHandoverGain = DC_POST_HANDOVER_GAIN;
+    }
     if (inputDistance > 0 && journeyTargetDistance < handoverDistance) {
-      var forwardToHandover = (handoverDistance - journeyTargetDistance) / 1.25;
+      var forwardToHandover = (handoverDistance - journeyTargetDistance) / preHandoverGain;
       journeyTargetDistance = inputDistance <= forwardToHandover
-        ? journeyTargetDistance + inputDistance * 1.25
-        : handoverDistance + inputDistance - forwardToHandover;
+        ? journeyTargetDistance + inputDistance * preHandoverGain
+        : handoverDistance + (inputDistance - forwardToHandover) * postHandoverGain;
     } else if (inputDistance < 0 && journeyTargetDistance > handoverDistance) {
-      var reverseToHandover = journeyTargetDistance - handoverDistance;
+      var reverseToHandover = (journeyTargetDistance - handoverDistance) / postHandoverGain;
       journeyTargetDistance = -inputDistance <= reverseToHandover
-        ? journeyTargetDistance + inputDistance
-        : handoverDistance + (inputDistance + reverseToHandover) * 1.25;
+        ? journeyTargetDistance + inputDistance * postHandoverGain
+        : handoverDistance + (inputDistance + reverseToHandover) * preHandoverGain;
     } else {
       journeyTargetDistance += inputDistance * (
         journeyTargetDistance < handoverDistance ||
         (journeyTargetDistance === handoverDistance && inputDistance < 0)
-          ? 1.25
-          : 1.00
+          ? preHandoverGain
+          : postHandoverGain
       );
     }
     journeyTargetDistance = clamp(journeyTargetDistance, 0, continuousJourneyLength);
@@ -1533,7 +1554,7 @@
     }
     deltaPixels = clamp(deltaPixels, -90, 90);
     dcTargetY = clamp(
-      dcTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.25,
+      dcTargetY + (deltaPixels / runtime.getPxPerUnit()) * DC_BRANCH_INPUT_GAIN,
       dcIntroStop().y,
       dcJourney.cameraEnd.y
     );
@@ -1591,7 +1612,7 @@
     }
     deltaPixels = clamp(deltaPixels, -90, 90);
     itTargetY = clamp(
-      itTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.25,
+      itTargetY + (deltaPixels / runtime.getPxPerUnit()) * IT_BRANCH_INPUT_GAIN,
       itIntroStop().y,
       itJourney.cameraEnd.y
     );
@@ -1630,7 +1651,7 @@
     }
     deltaPixels = clamp(deltaPixels, -90, 90);
     avTargetY = clamp(
-      avTargetY + (deltaPixels / runtime.getPxPerUnit()) * 1.25,
+      avTargetY + (deltaPixels / runtime.getPxPerUnit()) * AV_BRANCH_INPUT_GAIN,
       avIntroStop().y,
       avJourney.cameraEnd.y
     );
